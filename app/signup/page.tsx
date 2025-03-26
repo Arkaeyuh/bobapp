@@ -14,21 +14,35 @@ export default function Signup() {
     const [error, setError] = useState("");
 
     async function handleSubmit(e: FormEvent) {
-        e.preventDefault();
-        setError("");
+      e.preventDefault();
+      setError("");
     
-        if (password !== confirmPassword) {
-          setError("Passwords do not match");
-          return;
-        }
-    
-        try {
-          console.log("User signed up:", { email, password });
-          router.push("/");
-        } catch (err) {
-          setError("Failed to sign up. Please try again later.");
-        }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
       }
+    
+      try {
+        const response = await fetch("/api/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+    
+        const data = await response.json();
+    
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to sign up");
+        }
+    
+        console.log("User signed up:", data);
+        router.push("/");
+      } catch (err: any) {
+        setError(err.message || "Failed to sign up. Please try again later.");
+      }
+    }
 
       
 

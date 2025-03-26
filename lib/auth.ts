@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
         try {
           // Query the database for the user by email
           const result = await pool.query(
-            "SELECT id, email, password_hash FROM users WHERE email = $1",
+            "SELECT id, email, password FROM users WHERE email = $1",
             [credentials.email]
           );
 
@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
           // Compare the provided password with the stored password hash
           const isValid = await bcrypt.compare(
             credentials.password,
-            user.password_hash
+            user.password
           );
 
           if (!isValid) {
