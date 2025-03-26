@@ -24,7 +24,7 @@ export default function Home() {
     if (result?.error) {
       setError("Invalid email or password");
     } else {
-      router.push("/placeholder");
+      router.push("/home");
     }
   }
   return (

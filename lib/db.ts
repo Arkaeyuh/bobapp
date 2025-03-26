@@ -17,10 +17,10 @@ if (!global.pgPool) {
   global.pgPool = new Pool({
     user: process.env.PSQL_USER,
     host: process.env.PSQL_HOST,
-    database: process.env.PSQL_DATABASE,
+    database: process.env.PSQL_DB,
     password: process.env.PSQL_PASSWORD,
     port: process.env.PSQL_PORT ? parseInt(process.env.PSQL_PORT, 10) : 5432,
-    ssl: { rejectUnauthorized: false },
+    ssl: process.env.PSQL_SSL === 'true' ? { rejectUnauthorized: false } : undefined, // Explicitly handle SSL
   });
 }
 
