@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import pool from "@/lib/db";
+import { getPool } from "@/lib/db";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Query the database for the user by email
+          const pool = getPool();
           const result = await pool.query(
             "SELECT id, email, password FROM users WHERE email = $1",
             [credentials.email]
