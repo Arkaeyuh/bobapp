@@ -10,15 +10,15 @@ import React, {createContext, useState, useContext, ReactNode} from 'react';
 
 // Type Definitions for Item, Ingredient, and the cartContextType
 export interface Item {
+    itemid: number
     name: string
-    id: number
     quantity: number
     ingredients: Ingredient[]
 }
 
 export interface Ingredient {
+    ingredientid: number
     name: string
-    id: number
 }
 
 interface cartContextType {
