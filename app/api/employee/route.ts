@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getPool } from "@/lib/db";
 
+// psql -h csce-315-db.engr.tamu.edu -U team_43 -d team_43_db
+
 export async function GET() {
   try {
     const pool = await getPool();
