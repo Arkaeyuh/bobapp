@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function ManageIngredient() {
   interface Ingredient {
@@ -13,6 +12,8 @@ export default function ManageIngredient() {
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] =
+    useState<Ingredient | null>(null);
   const [newIngredient, setNewIngredient] = useState({
     name: "",
     numinstock: 0,
@@ -40,8 +41,8 @@ export default function ManageIngredient() {
       return;
     }
 
-    const ingredientData = {
-      ingredientid: Math.floor(Math.random() * 10000), // Temporary ID
+    const ingredientData: Ingredient = {
+      ingredientid: Math.floor(Math.random() * 10000),
       ...newIngredient,
     };
 
@@ -66,11 +67,12 @@ export default function ManageIngredient() {
     const { name, value } = e.target;
     setNewIngredient((prev) => ({
       ...prev,
-      [name]: Number(value),
+      [name]: name === "name" ? value : Number(value),
     }));
   }
 
-  async function removeIngredient(ingredientid: number) {
+  async function removeIngredient(ingredientid: number, e: React.MouseEvent) {
+    e.stopPropagation();
     try {
       const response = await fetch(`/api/ingredient`, {
         method: "DELETE",
@@ -79,13 +81,19 @@ export default function ManageIngredient() {
       });
       if (!response.ok) throw new Error("Failed to remove ingredient");
       setIngredients(
-        ingredients.filter(
-          (ingredient) => ingredient.ingredientid !== ingredientid
-        )
+        ingredients.filter((i) => i.ingredientid !== ingredientid)
       );
     } catch (error) {
       console.error("Error removing ingredient:", error);
     }
+  }
+
+  function handleIngredientClick(ingredient: Ingredient) {
+    setSelectedIngredient(ingredient);
+  }
+
+  function closeIngredientModal() {
+    setSelectedIngredient(null);
   }
 
   return (
@@ -93,18 +101,21 @@ export default function ManageIngredient() {
       <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-8">
         Manage Ingredients
       </h1>
+
       <div className="max-w-2xl mx-auto">
         <button
           onClick={() => setShowModal(true)}
-          className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+          className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
         >
           Add Ingredient
         </button>
+
         <ul className="space-y-5">
           {ingredients.map((ingredient) => (
             <li
               key={ingredient.ingredientid}
-              className="p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border border-gray-200"
+              className="p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border border-gray-200 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100 hover:shadow-gray-400 duration-200"
+              onClick={() => handleIngredientClick(ingredient)}
             >
               <div>
                 <p className="text-xl font-semibold text-gray-800">
@@ -115,8 +126,8 @@ export default function ManageIngredient() {
                 </p>
               </div>
               <button
-                onClick={() => removeIngredient(ingredient.ingredientid)}
-                className="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600"
+                onClick={(e) => removeIngredient(ingredient.ingredientid, e)}
+                className="px-3 py-1 bg-red-500 text-white rounded-lg shadow opacity-90 hover:bg-red-600 hover:opacity-100 transition hover:scale-105 duration-200"
               >
                 Remove
               </button>
@@ -124,6 +135,88 @@ export default function ManageIngredient() {
           ))}
         </ul>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
+            <h2 className="text-2xl font-bold mb-4 text-white">
+              Add New Ingredient
+            </h2>
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={newIngredient.name}
+              onChange={handleInputChange}
+              className="mb-2 w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-white bg-gray-900"
+            />
+            <div className="mb-2">
+              <label className="block text-sm font-medium text-white mb-1">
+                Number in stock
+              </label>
+              <input
+                type="number"
+                name="numinstock"
+                value={newIngredient.numinstock}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-white bg-gray-900"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-white mb-1">
+                Max number
+              </label>
+              <input
+                type="number"
+                name="maxnum"
+                value={newIngredient.maxnum}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-white bg-gray-900"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                className="mr-2 px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={addIngredient}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:scale-105 duration-200"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedIngredient && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
+            <h2 className="text-2xl font-bold mb-4 text-gray-100">
+              Ingredient Details
+            </h2>
+            <p className="text-gray-200">
+              <strong>ID:</strong> {selectedIngredient.ingredientid}
+            </p>
+            <p className="text-gray-200">
+              <strong>Name:</strong> {selectedIngredient.name}
+            </p>
+            <p className="text-gray-200">
+              <strong>Stock:</strong> {selectedIngredient.numinstock} /{" "}
+              {selectedIngredient.maxnum}
+            </p>
+            <button
+              onClick={closeIngredientModal}
+              className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition hover:scale-105 duration-200"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
