@@ -42,7 +42,7 @@ export default function ManageIngredient() {
     }
 
     const ingredientData: Ingredient = {
-      ingredientid: Math.floor(Math.random() * 10000),
+      ingredientid: ingredients.length + 1,
       ...newIngredient,
     };
 

@@ -43,7 +43,7 @@ export default function ManageItem() {
     }
 
     const itemData: Item = {
-      itemid: Math.floor(Math.random() * 10000),
+      itemid: items.length + 1,
       ...newItem,
     };
 
