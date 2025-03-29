@@ -44,14 +44,9 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   try {
     const pool = await getPool();
-    const { searchParams } = new URL(req.url);
-    const employeeid = searchParams.get("employeeid");
+    const body = await req.json();
 
-    if (!employeeid)
-      return NextResponse.json(
-        { success: false, error: "Employee ID is required" },
-        { status: 400 }
-      );
+    const { employeeid } = body;
 
     await pool.query("DELETE FROM employee WHERE employeeid = $1", [
       employeeid,

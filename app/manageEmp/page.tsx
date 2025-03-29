@@ -72,8 +72,10 @@ export default function ManageEmp() {
 
   async function removeEmployee(employeeid: number) {
     try {
-      const response = await fetch(`/api/employee/${employeeid}`, {
+      const response = await fetch(`/api/employee`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ employeeid }),
       });
       if (!response.ok) throw new Error("Failed to remove employee");
       setEmployees(employees.filter((emp) => emp.employeeid !== employeeid));
