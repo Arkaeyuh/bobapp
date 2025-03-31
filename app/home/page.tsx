@@ -21,7 +21,7 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link href={{ pathname: "/itemSelection", query: { category: "Milk Tea" } }}>
+          <Link href={{ pathname: "/itemSelection", query: { category: "Tea" } }}>
             <div className="cursor-pointer bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105">
               <Image
                 src="/Pearl+Milk+Tea.jpg"
