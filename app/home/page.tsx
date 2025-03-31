@@ -14,6 +14,12 @@ export default function HomePage() {
 
       <main className="flex flex-col items-center mt-10 px-4">
         <h2 className="text-2xl font-semibold mb-4 text-black">Our Specialties</h2>
+        <div className="text-center mb-8 text-gray-700">
+          {/* This button will send you to the order summary */}
+          <Link href="/orderSummary">
+            <p className="text-blue-500 hover:underline">Go to Checkout</p>
+          </Link>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link href={{ pathname: "/itemSelection", query: { category: "Milk Tea" } }}>
             <div className="cursor-pointer bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105">

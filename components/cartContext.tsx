@@ -33,7 +33,11 @@ interface Props{
   children?: ReactNode
 }
 
-export const CartContext = createContext<cartContextType>({cart:[], addToCart: (item:Item)=>{}, removeFromCart: (index:number)=>{}});
+export const CartContext = createContext<cartContextType>({
+  cart:[], 
+  addToCart: (item:Item)=>{}, 
+  removeFromCart: (index:number)=>{}
+});
 
 export function CartProvider({children}:Props) {
   // setup for cart variable, addToCart method, and removeFromCart method
