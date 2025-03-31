@@ -157,9 +157,9 @@ export default function ingredientSelection()
             <button>Cancel</button>
           </Link>
             <button onClick={()=> {console.log(ingredients); console.log(cart)}}>||Display Ingredients/cart Array In Console||</button>
-            {/* <Link href={{pathname:"/home"}}> */}
+            <Link href={{pathname:"/home"}}>
               <button onClick={()=> addSelectedItemToCart()}>||Done||</button>
-            {/* </Link> */}
+            </Link>
           </div>
         </div>
     )

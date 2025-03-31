@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 type Item = {
   itemid: number;
@@ -64,9 +65,11 @@ export default function ItemSelectionPage() {
             >
               <h3 className="text-xl font-bold text-black mb-2">{item.name}</h3>
               <p className="text-gray-700">${Number(item.price).toFixed(2)}</p>
+              <Link href={{ pathname: "/ingredientSelection", query: { itemid: item.itemid } }}>
               <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                 Add to Cart
               </button>
+              </Link>
             </div>
           ))}
         </div>
