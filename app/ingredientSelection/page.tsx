@@ -49,7 +49,7 @@ export default function ingredientSelection()
         const data = await response.json();
 
         // Setting current item
-        const tempItem:Item = {
+        const currItemSetup:Item = {
           itemid: data.currentItem[0].itemid,
           name:data.currentItem[0].name,
           quantity:1,
@@ -57,7 +57,7 @@ export default function ingredientSelection()
           category: data.currentItem[0].category,
           ingredients:[]
         }
-        setCurrentItem((i)=>tempItem)
+        setCurrentItem((i)=>currItemSetup)
 
         const defaultIngredients: Ingredient[] = data.defaultIngredients;
         // Adding default ingredient IDs to a set
@@ -90,10 +90,10 @@ export default function ingredientSelection()
       const selectedIngredients: Ingredient[] = []
       for(let i=0; i<ingredients.length; i++)
       {
-        const element = document.getElementById("ingredButton"+ingredients[i].ingredientid)
+        const element = document.getElementById("ingredButton"+ingredients[i].ingredientid) as HTMLButtonElement
         if(element)
         {
-          if(element.className=== "text-red-400") // TODO make not bad
+          if(element.value === "selected")
           {
             selectedIngredients.push(ingredients[i])
           }
@@ -112,26 +112,26 @@ export default function ingredientSelection()
     }
 
     return(
-        <div className="flex-col">
-          <div className="flex justify-around border border-amber-200">
-            <div className="border border-blue-200 w-2/5">
+        <div className="flex-col bg-gray-100 min-h-screen">
+          <div className="flex justify-around">
+            <div className="w-2/5">
               <Image src="/Pearl+Milk+Tea.jpg" width = {100} height = {100} alt="Image of Item Just Selected" className="float-left w-64"/>
-              <h2>{(currentItem) ? currentItem.name : "ITEM NAME NOT FOUND"}</h2>
-              <p>What a great description</p>
+              <h2 className="text-2xl font-semibold text-black">{(currentItem) ? currentItem.name : "ITEM NAME NOT FOUND"}</h2>
+              <p className="text-lg text-black">What a great description</p>
             </div>
-            <div className="border border-yellow-200 w-2/5">
-              <h2> Quantity</h2>
+            <div className="w-2/5 content-center">
+              <h2 className="text-2xl font-semibold text-black justify-self-center" > Quantity</h2>
               <div className="grid grid-cols-10 justify-items-center">
-                <label htmlFor="radio1">1</label>
-                <label htmlFor="radio2">2</label>
-                <label htmlFor="radio3">3</label>
-                <label htmlFor="radio4">4</label>
-                <label htmlFor="radio5">5</label>
-                <label htmlFor="radio6">6</label>
-                <label htmlFor="radio7">7</label>
-                <label htmlFor="radio8">8</label>
-                <label htmlFor="radio9">9</label>
-                <label htmlFor="radio10">10</label>
+                <label className="text-black" htmlFor="radio1">1</label>
+                <label className="text-black" htmlFor="radio2">2</label>
+                <label className="text-black" htmlFor="radio3">3</label>
+                <label className="text-black" htmlFor="radio4">4</label>
+                <label className="text-black" htmlFor="radio5">5</label>
+                <label className="text-black" htmlFor="radio6">6</label>
+                <label className="text-black" htmlFor="radio7">7</label>
+                <label className="text-black" htmlFor="radio8">8</label>
+                <label className="text-black" htmlFor="radio9">9</label>
+                <label className="text-black" htmlFor="radio10">10</label>
                 <input type="radio" id="radio1" name="quantityRadio" value="1" defaultChecked></input>
                 <input type="radio" id="radio2" name="quantityRadio" value="2"></input>
                 <input type="radio" id="radio3" name="quantityRadio" value="3"></input>
@@ -152,13 +152,13 @@ export default function ingredientSelection()
               ))
           }
           </div>
-          <div className = "flex justify-evenly">
-          <Link href={{ pathname: "/itemSelection", query: { category: currentItem.category } }}>
-            <button>Cancel</button>
-          </Link>
-            <button onClick={()=> {console.log(ingredients); console.log(cart)}}>||Display Ingredients/cart Array In Console||</button>
+          <div className = "flex justify-evenly m-5">
+            <Link href={{ pathname: "/itemSelection", query: { category: currentItem.category } }}>
+              <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Cancel</button>
+            </Link>
+            <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> {console.log(cart); addSelectedItemToCart();}}>Display cart to console, then add to cart</button>
             <Link href={{pathname:"/home"}}>
-              <button onClick={()=> addSelectedItemToCart()}>||Done||</button>
+              <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> addSelectedItemToCart()}>Confirm</button>
             </Link>
           </div>
         </div>
