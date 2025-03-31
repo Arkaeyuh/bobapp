@@ -1,19 +1,19 @@
 'use client'
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, Suspense} from 'react'
 import Image from "next/image"
 import { useCart, Item, Ingredient} from '@/components/cartContext'
 import {IngredientToggleButton} from '@/components/ingredientToggleButton'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function ingredientSelection()
+function IngredientSelectionContent()
 {
     const searchParams = useSearchParams()
     const itemID = searchParams.get("itemid")
     const {cart, addToCart}  = useCart();
 
     if(!itemID)
-      return
+      return null;
 
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [defaultIngredientIds, setDefaultIngredientIds] = useState<Set<number>>(new Set());
@@ -163,4 +163,12 @@ export default function ingredientSelection()
           </div>
         </div>
     )
+}
+
+export default function IngredientSelectionPage() {
+  return (
+    <Suspense fallback={<p className="text-center mt-10">Loading...</p>}>
+      <IngredientSelectionContent />
+    </Suspense>
+  );
 }

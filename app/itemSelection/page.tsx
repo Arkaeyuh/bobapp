@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -11,7 +11,7 @@ type Item = {
   category: string;
 };
 
-export default function ItemSelectionPage() {
+function ItemSelectionContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
 
@@ -66,9 +66,9 @@ export default function ItemSelectionPage() {
               <h3 className="text-xl font-bold text-black mb-2">{item.name}</h3>
               <p className="text-gray-700">${Number(item.price).toFixed(2)}</p>
               <Link href={{ pathname: "/ingredientSelection", query: { itemid: item.itemid } }}>
-              <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Add to Cart
-              </button>
+                <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                  Add to Cart
+                </button>
               </Link>
             </div>
           ))}
@@ -79,5 +79,13 @@ export default function ItemSelectionPage() {
         <p className="text-center">© 2025 ShareTea. All rights reserved.</p>
       </footer>
     </div>
+  );
+}
+
+export default function ItemSelectionPage() {
+  return (
+    <Suspense fallback={<p className="text-center mt-10">Loading...</p>}>
+      <ItemSelectionContent />
+    </Suspense>
   );
 }
