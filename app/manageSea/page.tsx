@@ -11,6 +11,14 @@ export default function ManageItem() {
     category: string;
   }
 
+  interface Item {
+    itemid: number;
+    name: string;
+    ingredientid: number;
+    price: number;
+    category: string;
+  }
+
   const [items, setItems] = useState<Seasonal[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Seasonal | null>(null);
@@ -97,22 +105,47 @@ export default function ManageItem() {
       const response = await fetch("/api/seasonal");
       if (!response.ok) throw new Error("Failed to fetch seasonal items");
       const data = await response.json();
-
       const seasonalItems = data.items;
+
+      const itemRes = await fetch("/api/item");
+      if (!itemRes.ok) throw new Error("Failed to fetch existing items");
+      const itemData = await itemRes.json();
+      let len = itemData.items.length;
+
       for (const seasonalItem of seasonalItems) {
-        await fetch("/api/item", {
+        const d = {
+          itemid: ++len,
+          name: seasonalItem.name,
+          ingredientid: seasonalItem.ingredientid,
+          price: seasonalItem.price,
+          category: seasonalItem.category,
+        };
+
+        const res = await fetch("/api/item", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(seasonalItem),
+          body: JSON.stringify(d),
+        });
+
+        if (!res.ok) {
+          console.error(
+            `Failed to add item with ID ${seasonalItem.seasonalid}:`,
+            await res.text()
+          );
+          continue;
+        }
+      }
+
+      for (const item of seasonalItems) {
+        await fetch("/api/seasonal", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ seasonalid: item.seasonalid }),
         });
       }
 
-      await fetch("/api/seasonal", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-
       setItems([]);
+
       alert("All seasonal items have been merged successfully.");
     } catch (error) {
       console.error("Error merging items:", error);
@@ -145,7 +178,16 @@ export default function ManageItem() {
           onClick={() => mergeItems()}
           className="mb-4 ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
         >
-          Merge seasonal items
+          Merge Seasonal Items
+        </button>
+
+        <button
+          onClick={() => {
+            window.location.href = "/manageItem";
+          }}
+          className="mb-4 ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
+        >
+          Manage Item
         </button>
 
         <ul className="space-y-5">
