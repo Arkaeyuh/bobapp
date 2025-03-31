@@ -24,7 +24,9 @@ function ItemSelectionContent() {
 
     async function fetchItems() {
       try {
-        const res = await fetch(`/api/items?category=${encodeURIComponent(category || "")}`);
+        const res = await fetch(
+          `/api/items?category=${encodeURIComponent(category || "")}`
+        );
         const data = await res.json();
 
         if (res.ok) {
@@ -47,12 +49,16 @@ function ItemSelectionContent() {
       <header className="w-full bg-blue-500 text-white py-6">
         <h1 className="text-4xl font-bold text-center">Item Selection</h1>
         <p className="text-center mt-2 text-lg">
-          {category ? `Browse our delicious ${category} options` : "No category selected"}
+          {category
+            ? `Browse our delicious ${category} options`
+            : "No category selected"}
         </p>
       </header>
 
       <main className="flex flex-col items-center mt-10 px-4 w-full">
-        <h2 className="text-2xl font-semibold mb-6 text-black">{category} Menu</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-black">
+          {category} Menu
+        </h2>
 
         {loading && <p className="text-gray-700">Loading items...</p>}
         {error && <p className="text-red-500">{error}</p>}
@@ -65,7 +71,12 @@ function ItemSelectionContent() {
             >
               <h3 className="text-xl font-bold text-black mb-2">{item.name}</h3>
               <p className="text-gray-700">${Number(item.price).toFixed(2)}</p>
-              <Link href={{ pathname: "/ingredientSelection", query: { itemid: item.itemid } }}>
+              <Link
+                href={{
+                  pathname: "/ingredientSelection",
+                  query: { itemid: item.itemid },
+                }}
+              >
                 <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                   Add to Cart
                 </button>
