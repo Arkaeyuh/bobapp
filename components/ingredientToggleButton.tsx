@@ -9,41 +9,39 @@ interface IngredientToggleButtonProps {
 }
 
 export function IngredientToggleButton({uniqueID, ingredient, selected}: IngredientToggleButtonProps) {
-    // const [ingredi, setIngredient] = useState<Ingredient>(ingredient);
     const [select, setSelect] = useState<boolean>(selected);
 
-    function toggle() {
+    // function toggle(event:React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        function toggle() {
         if(select) {
             setSelect(false)
+            // event.buttons
             const element = document.getElementById("ingredButton"+uniqueID)
             if(element)
+            {
                 element.className = "text-blue-400"
+            }
         }
         else {
             setSelect(true)
             const element = document.getElementById("ingredButton"+uniqueID)
             if(element)
+            {
                 element.className = "text-red-400"
+            }
         }
-    }
-
-    function getResult(): Ingredient|undefined {
-        if(select)
-            return ingredient
-        else
-            return undefined
     }
 
     if(select)
     {
         return (
-            <button id={"ingredButton"+uniqueID} className="text-red-400" onClick={()=>toggle()}>{ingredient.name}</button>
+            <button id={"ingredButton"+uniqueID} className="text-red-400" value="selected" onClick={()=>toggle()}>{ingredient.name}</button>
           )
     }   
     else
     {
         return (
-            <button id={"ingredButton"+uniqueID} className="text-blue-400" onClick={()=>toggle()}>{ingredient.name}</button>
+            <button id={"ingredButton"+uniqueID} className="text-blue-400" value="unselected" onClick={()=>toggle()}>{ingredient.name}</button>
           )
     }
  

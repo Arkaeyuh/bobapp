@@ -13,11 +13,13 @@ export default function Test() {
   // Made up item just for testing
   const itemToAdd:Item = {
     name: "Classic Tea",
-    id: 1,
+    itemid: 1,
+    price: "1.00",
+    category: "Tea",
     quantity: 1,
     ingredients: [{
       name:"Tea Leaves",
-      id:2
+      ingredientid:2
     }]
   }
 
@@ -44,6 +46,8 @@ export default function Test() {
   return (
     <div>
       <h2 id="header2">{printLength()}</h2>
+      <button onClick={() => console.log(cart)}>view cart</button>
+
       <button onClick={() => handleAddToCart()}>Add to cart</button>
       <button  onClick={() => handleRemoveFromCart()}>Remove from cart</button>
       {/* <Link href="/test2">CLICK ME</Link> */}

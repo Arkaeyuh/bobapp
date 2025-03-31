@@ -13,6 +13,8 @@ export interface Item {
     itemid: number
     name: string
     quantity: number
+    price: string;
+    category: string;
     ingredients: Ingredient[]
 }
 
