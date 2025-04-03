@@ -11,7 +11,15 @@ export default function ManageItem() {
     category: string;
   }
 
+  interface Ingredient {
+    ingredientid: number;
+    name: string;
+    numinstock: number;
+    maxnum: number;
+  }
+
   const [items, setItems] = useState<Item[]>([]);
+  const [ingre, setIngre] = useState<Ingredient[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [newItem, setNewItem] = useState({
@@ -23,6 +31,7 @@ export default function ManageItem() {
 
   useEffect(() => {
     fetchItems();
+    fetchIngre();
   }, []);
 
   async function fetchItems() {
@@ -35,6 +44,29 @@ export default function ManageItem() {
       console.error("Error fetching items:", error);
     }
   }
+
+  async function fetchIngre() {
+    try {
+      const response = await fetch("/api/ingredient");
+      if (!response.ok) throw new Error("Failed to fetch ingredient");
+      const data = await response.json();
+      setIngre(data.Ingre);
+    } catch (error) {
+      console.error("Error fetching ingredient:", error);
+    }
+  }
+
+  function isLowStock(ingredientid: number): boolean {
+    if (!ingre) return false; // Ensure ingre is defined
+    const ingredient = ingre.find((i) => i.ingredientid === ingredientid);
+    return ingredient ? ingredient.numinstock < 5 : false;
+  }
+
+  // function isLowStock(ingredientid: number): boolean {
+  //   const ingredient = ingre.find((i) => i.ingredientid === ingredientid);
+  //   return ingredient ? ingredient.numinstock < 5 : false;
+  //   return false;
+  // }
 
   async function addItem() {
     if (!newItem.name || !newItem.category) {
@@ -127,8 +159,12 @@ export default function ManageItem() {
           {items.map((item) => (
             <li
               key={item.itemid}
-              className="p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border border-gray-200 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100 hover:shadow-gray-400 duration-200"
-              onClick={() => handleItemClick(item)}
+              className={`p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border border-gray-200 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100 duration-200 ${
+                isLowStock(item.ingredientid)
+                  ? "border-red-500 shadow-red-500"
+                  : ""
+              }`}
+              onClick={() => setSelectedItem(item)}
             >
               <div>
                 <p className="text-xl font-semibold text-gray-800">
