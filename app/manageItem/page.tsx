@@ -31,6 +31,9 @@ export default function ManageItem() {
 
   useEffect(() => {
     fetchItems();
+  }, []);
+
+  useEffect(() => {
     fetchIngre();
   }, []);
 
@@ -50,23 +53,21 @@ export default function ManageItem() {
       const response = await fetch("/api/ingredient");
       if (!response.ok) throw new Error("Failed to fetch ingredient");
       const data = await response.json();
-      setIngre(data.Ingre);
+      setIngre(data.ingredients);
+      console.log(data.ingredients);
     } catch (error) {
       console.error("Error fetching ingredient:", error);
     }
   }
 
   function isLowStock(ingredientid: number): boolean {
-    if (!ingre) return false; // Ensure ingre is defined
+    if (!ingre) {
+      console.error("Ingredients data is not available");
+      return false;
+    }
     const ingredient = ingre.find((i) => i.ingredientid === ingredientid);
-    return ingredient ? ingredient.numinstock < 5 : false;
+    return ingredient ? ingredient.numinstock / ingredient.maxnum < 0.1 : false;
   }
-
-  // function isLowStock(ingredientid: number): boolean {
-  //   const ingredient = ingre.find((i) => i.ingredientid === ingredientid);
-  //   return ingredient ? ingredient.numinstock < 5 : false;
-  //   return false;
-  // }
 
   async function addItem() {
     if (!newItem.name || !newItem.category) {
@@ -132,11 +133,24 @@ export default function ManageItem() {
     }));
   }
 
+  const lowStockItems = items.filter((item) => isLowStock(item.ingredientid));
+
   return (
     <div className="p-8 bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen">
       <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-8">
         Manage Items
       </h1>
+
+      {lowStockItems.length > 0 && (
+        <div className="mb-4 p-4 bg-red-100 border-l-4 border-red-600 text-red-800 rounded">
+          <p className="font-semibold">Low Stock Warning:</p>
+          <ul className="list-disc ml-4">
+            {lowStockItems.map((item) => (
+              <li key={item.itemid}>{item.name}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="max-w-2xl mx-auto">
         <button
@@ -159,11 +173,19 @@ export default function ManageItem() {
           {items.map((item) => (
             <li
               key={item.itemid}
-              className={`p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border border-gray-200 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100 duration-200 ${
+              className={`p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100 duration-200 ${
                 isLowStock(item.ingredientid)
-                  ? "border-red-500 shadow-red-500"
-                  : ""
+                  ? "border-2 border-red-600 shadow-red-500"
+                  : "border-gray-200"
               }`}
+              style={
+                isLowStock(item.ingredientid)
+                  ? {
+                      animation: "glow 1.5s infinite alternate",
+                      boxShadow: "0 0 15px rgba(255, 0, 0, 0.7)",
+                    }
+                  : {}
+              }
               onClick={() => setSelectedItem(item)}
             >
               <div>
