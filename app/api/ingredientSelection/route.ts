@@ -7,7 +7,7 @@ export async function GET(request: Request)
     const itemID = searchParams.get("itemID");
     try {
         const pool = getPool();
-        // console.log(`SELECT ingredient.ingredientid, ingredient.name FROM ingredient JOIN ingredientitem ON ingredient.ingredientid=ingredientitem.ingredientid WHERE ingredientitem.itemid=${itemID}`)
+        
         const defaultIngredients = await pool.query(
           `SELECT ingredient.ingredientid, ingredient.name FROM ingredient JOIN ingredientitem ON ingredient.ingredientid=ingredientitem.ingredientid WHERE ingredientitem.itemid=${itemID}`
         );
