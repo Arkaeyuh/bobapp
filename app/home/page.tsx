@@ -4,7 +4,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+
 export default function HomePage() {
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <header className="w-full bg-blue-500 text-white py-6">
@@ -15,6 +17,10 @@ export default function HomePage() {
       <main className="flex flex-col items-center mt-10 px-4">
         <h2 className="text-2xl font-semibold mb-4 text-black">Our Specialties</h2>
         <div className="text-center mb-8 text-gray-700">
+          {/* This button will send you to the manager page, but rn we don't have that */}
+          <Link href="/managerHome">
+            <p className="text-blue-500 hover:underline">Manager Page</p>
+          </Link>
           {/* This button will send you to the order summary */}
           <Link href="/orderSummary">
             <p className="text-blue-500 hover:underline">Go to Checkout</p>
