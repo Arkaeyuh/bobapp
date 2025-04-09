@@ -1,12 +1,11 @@
 "use client";
 import assert from 'assert';
 import React, {createContext, useState, useContext, ReactNode} from 'react';
-// To use the context, need the following three things
+// To use the context for its cart, need the following three things
 // 'use client'
 // import { useCart, Item, Ingredient} from '@/components/cartContext'
 // const {cart, addToCart, removeFromCart}  = useCart()
 // Top 2 should be at beginning of file. Last one should be inside the export default function
-
 
 // Type Definitions for Item, Ingredient, and the cartContextType
 export interface Item {
@@ -66,7 +65,7 @@ export function CartProvider({children}:Props) {
 
   return (
     <CartContext.Provider value={{cart, addToCart, removeFromCart, lastTimeRanZReport, setZReportTime}}>
-        {children}
+      {children}
     </CartContext.Provider>
   );
 }

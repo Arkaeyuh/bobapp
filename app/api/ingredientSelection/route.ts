@@ -26,8 +26,3 @@ export async function GET(request: Request)
         return NextResponse.json({ success: false, error: "Failed to sign up user" }, { status: 500 });
       }
 }
-
-export async function POST()
-{
-    
-}

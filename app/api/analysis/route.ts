@@ -11,11 +11,6 @@ export async function GET(request: Request)
         return NextResponse.json({ success: true, totalPerHours:totalPerHourResult.rows});
       } catch (error) {
         console.error("Error getting ingredients from db:", error);
-        return NextResponse.json({ success: false, error: "Failed to sign up user" }, { status: 500 });
+        return NextResponse.json({ success: false, error: "Failed to query databse for x/z report" }, { status: 500 });
       }
-}
-
-export async function POST()
-{
-    
 }
