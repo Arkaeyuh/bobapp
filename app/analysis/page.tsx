@@ -112,21 +112,26 @@ export default function analysisPage()
   }
 
   return(
-    <div className="bg-gray-100 min-h-screen flex flex-row justify-around">
-      <div>
-        <div className="h-100">
+    <div className="bg-gray-100 min-h-screen flex flex-row">
+      <div className="min-h-svh w-3/4">
+        <div className="">
           <Bar options={options} data={chartData}/>
         </div>
-        <div>
-          <p className = "text-black inline pr-1">Start Date:</p>
-          <DatePicker className = "text-black" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
-          <p className = "text-black inline pr-1">End Date:</p>
-          <DatePicker className = "text-black" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
-          <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Make Chart</button>
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-row p-1 justify-center">
+            <p className = "text-black inline font-semibold">Start Date:</p>
+            <DatePicker className = "text-black  px-1" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
+            <p className = "text-black inline font-semibold">End Date:</p>
+            <DatePicker className = "text-black  px-1" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
+            <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Make Chart</button>
+          </div>
+          <Link href={{ pathname: "/managerHome"}}>
+                <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Go Back</button>
+          </Link>
         </div>
       </div>
-      <div className = "grid gap-4 content-center justify-items-center">
-        <Link href={{ pathname: "/analysis/xReport"}}>
+      <div className = "flex flex-col ml-4 w-1/5 items-center justify-center border-l-2 border-gray-500">
+        <Link className="m-4" href={{ pathname: "/analysis/xReport"}}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate XReport</button>
         </Link>
         <Link href={{ pathname: "/analysis/zReport"}}>
