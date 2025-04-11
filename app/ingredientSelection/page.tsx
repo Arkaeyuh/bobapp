@@ -157,7 +157,7 @@ function IngredientSelectionContent()
               ingredients.map((ingred) => (
                   defaultIngredientIds.has(ingred.ingredientid) ?
                     <IngredientToggleButton key={ingred.ingredientid} uniqueID={ingred.ingredientid} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
-                    : <div key = {ingred.ingredientid*10000}></div>
+                    : <div key = {ingred.ingredientid*10000} className="hidden"></div>
                 ))
             }
             </div>
@@ -168,7 +168,7 @@ function IngredientSelectionContent()
               ingredients.map((ingred) => (
                 !defaultIngredientIds.has(ingred.ingredientid) ?
                   <IngredientToggleButton key={ingred.ingredientid} uniqueID={ingred.ingredientid} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
-                  : <div key = {ingred.ingredientid*10000}></div>
+                  : <div key = {ingred.ingredientid*10000} className="hidden"></div>
               ))
             }
             </div>
