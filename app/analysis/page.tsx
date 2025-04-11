@@ -112,21 +112,27 @@ export default function analysisPage()
   }
 
   return(
-    <>
-    <div className="h-100">
-      <Bar options={options} data={chartData}/>
-    </div>
-      <div className = "grid gap-y-2 justify-items-center">
+    <div className="bg-gray-100 min-h-screen flex flex-row justify-around">
+      <div>
+        <div className="h-100">
+          <Bar options={options} data={chartData}/>
+        </div>
+        <div>
+          <p className = "text-black inline pr-1">Start Date:</p>
+          <DatePicker className = "text-black" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
+          <p className = "text-black inline pr-1">End Date:</p>
+          <DatePicker className = "text-black" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
+          <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Make Chart</button>
+        </div>
+      </div>
+      <div className = "grid gap-4 content-center justify-items-center">
         <Link href={{ pathname: "/analysis/xReport"}}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate XReport</button>
         </Link>
         <Link href={{ pathname: "/analysis/zReport"}}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate ZReport</button>
         </Link>
-        <DatePicker selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
-        <DatePicker selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
-        <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Make Chart</button>
       </div>
-    </>
+    </div>
   )
 }

@@ -112,7 +112,11 @@ function IngredientSelectionContent()
     }
 
     return(
-        <div className="flex-col bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 min-h-screen">
+          {/* <header className="w-full bg-blue-500 text-white py-6">
+            <h1 className="text-4xl font-bold text-center">Ingredient Selection</h1>
+            <p className="text-center mt-2 text-lg">Customize your drink just how you want it</p>
+          </header> */}
           <div className="flex justify-around">
             <div className="w-2/5">
               <Image src="/Pearl+Milk+Tea.jpg" width = {100} height = {100} alt="Image of Item Just Selected" className="float-left w-64"/>
@@ -145,22 +149,43 @@ function IngredientSelectionContent()
               </div>
             </div>
           </div>
-          <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {
-            ingredients.map((ingred) => (
-              <IngredientToggleButton key={ingred.ingredientid} uniqueID={ingred.ingredientid} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
+          <div>
+            <hr className="bg-gray-400 border-0 h-0.5 m-1 mt-3"></hr>
+            <h2 className="text-xl font-semibold text-black justify-self-center">Default Ingredients</h2>
+            <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {
+              ingredients.map((ingred) => (
+                  defaultIngredientIds.has(ingred.ingredientid) ?
+                    <IngredientToggleButton key={ingred.ingredientid} uniqueID={ingred.ingredientid} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
+                    : <></>
+                ))
+            }
+            </div>
+            <hr className="bg-gray-400 border-0 h-0.5 m-1 mt-3"></hr>
+            <h2 className="text-xl font-semibold text-black justify-self-center">Additional Ingredients</h2>
+            <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {
+              ingredients.map((ingred) => (
+                !defaultIngredientIds.has(ingred.ingredientid) ?
+                  <IngredientToggleButton key={ingred.ingredientid} uniqueID={ingred.ingredientid} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
+                  : <></>
               ))
-          }
+            }
+            </div>
+            <hr className="bg-gray-400 border-0 h-0.5 m-1  mt-3"></hr>
           </div>
           <div className = "flex justify-evenly m-5">
             <Link href={{ pathname: "/itemSelection", query: { category: currentItem.category } }}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Cancel</button>
             </Link>
-            <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> {console.log(cart); addSelectedItemToCart();}}>Display cart to console, then add to cart</button>
+            {/* <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> {console.log(cart); addSelectedItemToCart();}}>Display cart to console, then add to cart</button> */}
             <Link href={{pathname:"/home"}}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> addSelectedItemToCart()}>Confirm</button>
             </Link>
           </div>
+          {/* <footer className="w-full bg-blue-500 text-white py-4 mt-10">
+            <p className="text-center">© 2025 ShareTea. All rights reserved.</p>
+          </footer> */}
         </div>
     )
 }
