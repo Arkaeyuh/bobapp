@@ -27,7 +27,7 @@ export default function managerHome() {
         {/* Right column */}
         <div className="flex justify-end">
           <button
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/" })}
             className="bg-red-500 hover:bg-red-600 transition py-3 px-6 rounded-lg shadow-md text-lg"
           >
             Sign Out
