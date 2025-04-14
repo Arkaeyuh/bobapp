@@ -11,51 +11,75 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        try {
-          // Query the database for the user by email
-          const pool = getPool();
-          const result = await pool.query(
-            "SELECT id, email, password FROM users WHERE email = $1",
-            [credentials.email]
-          );
+        const pool = getPool();
+        const result = await pool.query(
+          "SELECT id, email, password, employeeid FROM users WHERE email = $1",
+          [credentials.email]
+        );  
 
-          // Check if a user was found
-          if (result.rows.length === 0) {
-            return null;
-          }
+        //TODO: Comment out the console.logs in prod
 
-          const user = result.rows[0];
+        console.log("Query result:", result.rows); // Debugging line
 
-          // Compare the provided password with the stored password hash
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-
-          if (!isValid) {
-            return null;
-          }
-
-          // Return the user object if authentication is successful
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-          };
-        } catch (error) {
-          console.error("Error during user authentication:", error);
+        if (result.rows.length === 0) {
           return null;
         }
+
+        const user = result.rows[0];
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+
+        console.log(isValid); // Debugging line
+        // If the password is not valid, return null.
+
+        if (!isValid) {
+          return null;
+        }
+
+        // If the user has an employeeid, then query the employee table.
+        if (user.employeeid) {
+          const empResult = await pool.query(
+            "SELECT ismanager FROM employee WHERE employeeid = $1",
+            [user.employeeid]
+          );
+          console.log("Employee query result:", empResult.rows); // Debugging line
+
+          user.ismanager = empResult.rows.length > 0 ? empResult.rows[0].ismanager : false;
+        } else {
+          user.ismanager = false;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          ismanager: user.ismanager, // Include manager flag in the returned user object.
+        };
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        // token.role = user.role; //Later add role to user prolly to see if they're employee vs. customer vs. manager
+        token.ismanager = user.ismanager; // Pass the ismanager flag into the token.
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = String(token.id);
+        // session.user.role = String(token.role);
+        session.user.ismanager = Boolean(token.ismanager); // Ensure the session has the manager flag.
+      }
+      return session;
+    },
   },
+  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: "jwt" },
 };

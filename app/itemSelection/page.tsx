@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 type Item = {
   itemid: number;
@@ -46,13 +47,36 @@ function ItemSelectionContent() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <header className="w-full bg-blue-500 text-white py-6">
-        <h1 className="text-4xl font-bold text-center">Item Selection</h1>
-        <p className="text-center mt-2 text-lg">
-          {category
-            ? `Browse our delicious ${category} options`
-            : "No category selected"}
-        </p>
+      {/* Header */}
+      <header className="w-full bg-blue-500 text-white py-6 mb-4 grid grid-cols-3 items-center px-6">
+        {/* Left column */}
+        <div className="flex justify-start">
+          <Link href="/home">
+            <button className="bg-gray-200 text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md">
+              Back
+            </button>
+          </Link>
+        </div>
+
+        {/* Center column */}
+        <div className="text-center">
+          <h1 className="text-4xl font-bold">Item Selection</h1>
+          <p className="mt-2 text-lg">
+            {category
+              ? `Browse our delicious ${category} options`
+              : "No category selected"}
+          </p>
+        </div>
+
+        {/* Right column */}
+        <div className="flex justify-end">
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="bg-red-500 hover:bg-red-600 transition py-3 px-6 rounded-lg shadow-md text-lg"
+          >
+            Sign Out
+          </button>
+        </div>
       </header>
 
       <main className="flex flex-col items-center mt-10 px-4 w-full">

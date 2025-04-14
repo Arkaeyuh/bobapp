@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+"use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {CartProvider} from '@/components/cartContext'
-// import Navbar from "@/components/Navbar";
+import {SessionProvider} from 'next-auth/react'
+// TODO: FIx metadata issue
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,11 +15,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "CSCE 331 Project 3",
-  description: "Currently WIP",
-};
 
 export default function RootLayout({
   children,
@@ -31,7 +28,9 @@ export default function RootLayout({
       >
         {/* <Navbar /> */}
         <CartProvider>
+          <SessionProvider>
           {children}
+          </SessionProvider>
         </CartProvider>
       </body>
     </html>
