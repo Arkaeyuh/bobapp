@@ -113,18 +113,20 @@ function IngredientSelectionContent()
 
     return(
         <div className="bg-gray-100 min-h-screen">
-          {/* <header className="w-full bg-blue-500 text-white py-6">
+          <header className="w-full bg-blue-500 text-white py-6">
             <h1 className="text-4xl font-bold text-center">Ingredient Selection</h1>
-            <p className="text-center mt-2 text-lg">Customize your drink just how you want it</p>
-          </header> */}
-          <div className="flex justify-around">
-            <div className="w-2/5">
-              <Image src="/Pearl+Milk+Tea.jpg" width = {100} height = {100} alt="Image of Item Just Selected" className="float-left w-64"/>
-              <h2 className="text-2xl font-semibold text-black">{(currentItem) ? currentItem.name : "ITEM NAME NOT FOUND"}</h2>
-              <p className="text-lg text-black">What a great description</p>
+            <p className="text-center mt-2 text-lg">Customize your drink exactly how you want it</p>
+          </header>
+          <div className="flex justify-center">
+            <div className="grow w-2/5 border-r-2 border-gray-400 pt-4 pb-3 px-15 flex flex-row">
+              <Image  className="w-72" src="/Pearl+Milk+Tea.jpg" width = {100} height = {100} alt="Image of Item Just Selected"/>
+              <div className="ml-2">
+                <h2 className="text-2xl font-semibold text-black underline">{(currentItem) ? currentItem.name : "Item name not found"}</h2>
+                <p className="text-md text-black">{(currentItem) ? currentItem.name : "This item"} is classic, fresh, and delicious. It is prepared daily on-site using only the finest ingredients.</p>
+              </div>
             </div>
-            <div className="w-2/5 content-center">
-              <h2 className="text-2xl font-semibold text-black justify-self-center" > Quantity</h2>
+            <div className="grow w-2/5 border-l-2 border-gray-400 content-center pt-4 pb-3 px-15">
+              <h2 className="text-2xl font-semibold text-black justify-self-center underline">Quantity</h2>
               <div className="grid grid-cols-10 justify-items-center">
                 <label className="text-black" htmlFor="radio1">1</label>
                 <label className="text-black" htmlFor="radio2">2</label>
@@ -150,9 +152,9 @@ function IngredientSelectionContent()
             </div>
           </div>
           <div>
-            <hr className="bg-gray-400 border-0 h-0.5 m-1 mt-3"></hr>
-            <h2 className="text-xl font-semibold text-black justify-self-center">Default Ingredients</h2>
-            <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <hr className="bg-gray-400 border-0 h-0.5"></hr>
+            <h2 className="text-xl font-semibold text-black justify-self-center mb-1 underline">Default Ingredients</h2>
+            <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-3">
             {
               ingredients.map((ingred) => (
                   defaultIngredientIds.has(ingred.ingredientid) ?
@@ -162,8 +164,8 @@ function IngredientSelectionContent()
             }
             </div>
             <hr className="bg-gray-400 border-0 h-0.5 m-1 mt-3"></hr>
-            <h2 className="text-xl font-semibold text-black justify-self-center">Additional Ingredients</h2>
-            <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <h2 className="text-xl font-semibold text-black justify-self-center mb-1 underline">Additional Ingredients</h2>
+            <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-3">
             {
               ingredients.map((ingred) => (
                 !defaultIngredientIds.has(ingred.ingredientid) ?
@@ -183,9 +185,9 @@ function IngredientSelectionContent()
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> addSelectedItemToCart()}>Confirm</button>
             </Link>
           </div>
-          {/* <footer className="w-full bg-blue-500 text-white py-4 mt-10">
+          <footer className="w-full bg-blue-500 text-white py-4 mt-5">
             <p className="text-center">© 2025 ShareTea. All rights reserved.</p>
-          </footer> */}
+          </footer>
         </div>
     )
 }

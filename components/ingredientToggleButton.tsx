@@ -23,13 +23,13 @@ export function IngredientToggleButton({uniqueID, ingredient, selected}: Ingredi
     if(select)
     {
         return (
-            <button id={"ingredButton"+uniqueID} className="bg-green-300 text-black rounded hover:bg-green-400" value="selected" onClick={()=>toggle()}>{ingredient.name}</button>
+            <button id={"ingredButton"+uniqueID} className="bg-green-300 text-black rounded hover:bg-green-400 border-2 border-green-500" value="selected" onClick={()=>toggle()}>{ingredient.name} [✓]</button>
           )
     }   
     else
     {
         return (
-            <button id={"ingredButton"+uniqueID} className="bg-red-300 text-black rounded hover:bg-red-400" value="unselected" onClick={()=>toggle()}>{ingredient.name}</button>
+            <button id={"ingredButton"+uniqueID} className="bg-red-300 text-black rounded hover:bg-red-400 border-2 border-red-500" value="unselected" onClick={()=>toggle()}>{ingredient.name} [X]</button>
           )
     }
  

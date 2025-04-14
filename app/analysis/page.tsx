@@ -112,32 +112,42 @@ export default function analysisPage()
   }
 
   return(
-    <div className="bg-gray-100 min-h-screen flex flex-row">
-      <div className="min-h-svh w-3/4">
-        <div className="">
-          <Bar options={options} data={chartData}/>
-        </div>
-        <div className="flex flex-col justify-center items-center">
-          <div className="flex flex-row p-1 justify-center">
-            <p className = "text-black inline font-semibold">Start Date:</p>
-            <DatePicker className = "text-black  px-1" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
-            <p className = "text-black inline font-semibold">End Date:</p>
-            <DatePicker className = "text-black  px-1" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
-            <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Make Chart</button>
+    <div className="bg-gray-100 min-h-screen">
+      <header className="w-full bg-blue-500 text-white py-6">
+        <h1 className="text-4xl font-bold text-center">Analysis Page</h1>
+        <p className="text-center mt-2 text-lg">View statistics about the store</p>
+      </header>
+      <div className="mt-4 flex flex-row">
+        <div className="w-3/4">
+          <div className="">
+            <Bar options={options} data={chartData}/>
           </div>
-          <Link href={{ pathname: "/managerHome"}}>
-                <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Go Back</button>
+          <div className="flex flex-row justify-center items-center">
+              <Link className="self-start ml-4" href={{ pathname: "/managerHome"}}>
+                    <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Go back to Manager Home</button>
+              </Link>
+            <div className="ml-auto flex flex-row p-1 justify-center mr-auto">
+              <p className = "text-black inline font-semibold">Start Date:</p>
+              <DatePicker className = "text-black  px-1" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
+              <p className = "text-black inline font-semibold">End Date:</p>
+              <DatePicker className = "text-black  px-1" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
+              <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Create Chart</button>
+            </div>
+          </div>
+        </div>
+        <div className = "flex flex-col ml-4 w-1/5 items-center justify-center border-l-2 border-gray-500">
+          <Link className="m-4" href={{ pathname: "/analysis/xReport"}}>
+                <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate XReport</button>
+          </Link>
+          <Link href={{ pathname: "/analysis/zReport"}}>
+                <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate ZReport</button>
           </Link>
         </div>
       </div>
-      <div className = "flex flex-col ml-4 w-1/5 items-center justify-center border-l-2 border-gray-500">
-        <Link className="m-4" href={{ pathname: "/analysis/xReport"}}>
-              <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate XReport</button>
-        </Link>
-        <Link href={{ pathname: "/analysis/zReport"}}>
-              <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate ZReport</button>
-        </Link>
-      </div>
+
+      <footer className="w-full bg-blue-500 text-white py-4 mt-4">
+        <p className="text-center">© 2025 ShareTea. All rights reserved.</p>
+      </footer>
     </div>
   )
 }
