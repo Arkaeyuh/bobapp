@@ -34,6 +34,8 @@ export default function OrderSummary() {
         quantityUsed,
       })
     );
+
+    // ingredientsToUpdate.unshift({ ingredientID: 999, quantityUsed: 999 }); // Add dummy entry for ingredientID 1
   
     // Send to backend
     try {

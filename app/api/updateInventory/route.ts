@@ -9,6 +9,8 @@ export async function POST(request: Request) {
     // Parse the JSON request body
     const ingredients: { ingredientID: number; quantityUsed: number }[] = await request.json();
 
+    let totalIngredientsUsed = 0;
+
     if (!Array.isArray(ingredients)) {
       return NextResponse.json({ error: 'Invalid data format' }, { status: 400 });
     }
@@ -21,6 +23,21 @@ export async function POST(request: Request) {
       await pool.query('BEGIN');
 
       // Loop through each ingredient in the array and update numInStock
+      for (const { quantityUsed } of ingredients) {
+        totalIngredientsUsed += quantityUsed;
+      }
+
+      const transactionQuery = await pool.query("SELECT COUNT(transactionID) FROM transaction");
+      const transactionID = Number(transactionQuery.rows[0].count) + 1;
+      console.log("Transaction ID: ", transactionID);
+      console.log(transactionQuery.rows);
+
+      await pool.query(
+        `INSERT INTO transaction VALUES ($1, $2, now(), $3, $4)`,
+        [transactionID, 7, 2, totalIngredientsUsed]
+      );
+
+
       for (const { ingredientID, quantityUsed } of ingredients) {
         await pool.query(
           `UPDATE ingredient 
