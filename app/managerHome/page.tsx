@@ -83,6 +83,17 @@ export default function managerHome() {
             </div>
           </Link>
         </div>
+        <div className="w-1/4 bg-white rounded-lg shadow-md p-6 mr-4">
+          <Link href="/analysis">
+            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105">
+              <h3 className="text-xl font-bold mb-2 text-black">Analysis and Reports</h3>
+              <p className="text-gray-700">
+                Analyze ingredient usage and create reports.
+              </p>
+            </div>
+          </Link>
+        </div>
       </div>
       <Link href="/home">
         <div className="text-center text-4xl text-white font-bold bg-green-500 hover:bg-green-600 transition py-3 px-6 rounded-lg shadow-md">

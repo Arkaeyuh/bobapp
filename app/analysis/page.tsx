@@ -8,13 +8,9 @@ import "react-datepicker/dist/react-datepicker.css";
 //https://www.chartjs.org/docs/latest/ and https://react-chartjs-2.js.org/
 import 'chart.js/auto';
 import { ChartData } from 'chart.js/auto';
-import { Bar, Chart } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 //TODO
-// MAKE PAGE NOT UGLY
-// MAKE CHART NOT UGLY
-// MAKE BETTER NO DATA indicator for x/z report
-// ADD GO BACK BUTTON TO MANAGER SELECTION PAGE
 // DON'T IMPORT FROM chart.js/auto BECAUSE BAD; ONLY IMPORT REQUIRED STUFF: https://www.chartjs.org/docs/latest/getting-started/integration.html#bundlers-webpack-rollup-etc
 
 interface sumAndDay {
