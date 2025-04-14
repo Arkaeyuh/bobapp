@@ -39,7 +39,8 @@ export default function managerHome() {
       <div className="flex flex-row w-full items-center justify-center mb-10">
         <div className="flex flex-col w-1/4 bg-white rounded-lg shadow-md p-6">
           <Link href="/manageEmp">
-            <div className="cursor-pointer bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105">
+            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105">
               <h3 className="text-xl font-bold mb-2 text-black">
                 Manage Employees
               </h3>
@@ -49,7 +50,8 @@ export default function managerHome() {
             </div>
           </Link>
           <Link href="/manageIngre">
-            <div className="cursor-pointer bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4">
+            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4">
               <h3 className="text-xl font-bold mb-2 text-black">
                 Manage Ingredients
               </h3>
@@ -61,15 +63,32 @@ export default function managerHome() {
         </div>
         <div className="w-1/4 bg-white rounded-lg shadow-md p-6 mx-4">
           <Link href="/manageItem">
-            <div className="cursor-pointer bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105">
+            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105">
               <h3 className="text-xl font-bold mb-2 text-black">Manage Items</h3>
               <p className="text-gray-700">
                 Add, remove, or update menu items.
               </p>
             </div>
           </Link>
+          <Link href="/weather">
+            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4">
+              <h3 className="text-xl font-bold mb-2 text-black">
+                View Weather
+              </h3>
+              <p className="text-gray-700">
+                Check the current weather conditions.
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
+      <Link href="/home">
+        <div className="text-center text-4xl text-white font-bold bg-green-500 hover:bg-green-600 transition py-3 px-6 rounded-lg shadow-md">
+          Go to Cashier View
+        </div>
+      </Link>
     </div>
   );
 }

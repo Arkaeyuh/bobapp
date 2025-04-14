@@ -3,8 +3,21 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart, Item, Ingredient} from '@/components/cartContext'
+import MailRu from "next-auth/providers/mailru";
 
 export default function checkoutPage() {
+  const {cart, addToCart, removeFromCart}  = useCart()
+
+  // Structure of an item in the cart
+  // { id: number; name: string; price: number; quantity: number; ingredients: Ingredient[]; }
+
+  interface Ingredient {
+    ingredientid: number;
+    name: string;
+  }
+  
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <Image

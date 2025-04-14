@@ -26,6 +26,7 @@ interface cartContextType {
     cart: Item[]
     addToCart: (item:Item) => void
     removeFromCart: (index:number) => void
+    clearCart: () => void
     lastTimeRanZReport: Date
     setZReportTime : (date:Date) => void
 }
@@ -38,6 +39,7 @@ export const CartContext = createContext<cartContextType>({
   cart:[], 
   addToCart: (item:Item)=>{}, 
   removeFromCart: (index:number)=>{},
+  clearCart: () => {},
   lastTimeRanZReport: new Date(),
   setZReportTime : (date:Date) => {}
 });
@@ -55,8 +57,12 @@ export function CartProvider({children}:Props) {
   }
 
   function removeFromCart(index:number) {
-    assert(index >=0 && index < cart.length, "Invalid index passed to removeFromCart method in components/cartContext.tsx. Index got: "+ index+". Length: "+cart.length);
+    assert(index >= 0 && index < cart.length, "Invalid index passed to removeFromCart method in components/cartContext.tsx. Index got: "+ index+". Length: "+cart.length);
     setCart(c => c.slice(0, index).concat(c.slice(index+1)));
+  }
+
+  function clearCart() {
+    setCart([]);
   }
 
   function setZReportTime(date:Date) {
@@ -64,7 +70,7 @@ export function CartProvider({children}:Props) {
   }
 
   return (
-    <CartContext.Provider value={{cart, addToCart, removeFromCart, lastTimeRanZReport, setZReportTime}}>
+    <CartContext.Provider value={{cart, addToCart, removeFromCart, clearCart, lastTimeRanZReport, setZReportTime}}>
       {children}
     </CartContext.Provider>
   );

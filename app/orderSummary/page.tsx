@@ -1,14 +1,62 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useCart, Item, Ingredient} from '@/components/cartContext'
+import { useRouter } from 'next/navigation';
 
 export default function OrderSummary() {
-  const {cart, addToCart, removeFromCart}  = useCart()
+  const {cart, removeFromCart, clearCart}  = useCart()
+  const router = useRouter();
 
   // Structure of an item in the cart
   // { id: number; name: string; price: number; quantity: number; ingredients: Ingredient[]; }
+  
+  const handleCheckout = async () => {
+    // Aggregate total quantity of each ingredient used
+    const ingredientUsage: Record<number, number> = {}; // { ingredientID: totalUsed }
+  
+    cart.forEach(item => {
+      item.ingredients.forEach(ingredient => {
+        const usedInCurrItem = item.quantity; // 1 per item by default, adjust if needed
+        if (ingredientUsage[ingredient.ingredientid]) {
+          ingredientUsage[ingredient.ingredientid] += usedInCurrItem;
+        } else {
+          ingredientUsage[ingredient.ingredientid] = usedInCurrItem;
+        }
+      });
+    });
+  
+    // Convert to array format for the backend
+    const ingredientsToUpdate = Object.entries(ingredientUsage).map(
+      ([ingredientID, quantityUsed]) => ({
+        ingredientID: Number(ingredientID),
+        quantityUsed,
+      })
+    );
+  
+    // Send to backend
+    try {
+      const result = await fetch("/api/updateInventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ingredientsToUpdate),
+      });
+  
+      if (result.ok) {
+        alert("Ingredients updated!");
+        // optionally clear cart or redirect
+      } else {
+        alert("Error updating stock.");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+    }
+
+    clearCart();
+    router.push('/checkoutPage');
+  };
+  
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gray-100">
@@ -52,12 +100,16 @@ export default function OrderSummary() {
 
       {/* Buttons */}
       <div className="flex justify-between w-full h-50 mt-4 items-center mt-auto">
-        <Link href="/home" className="flex bg-red-700 text-white text-3xl text-center items-center w-1/6 h-1/2 py-2 px-4 rounded-lg hover:bg-red-800">
-          Back to Selection
+        <Link 
+          href="/home" 
+          className="flex bg-red-700 text-white text-3xl text-center items-center w-1/6 h-1/2 py-2 px-4 rounded-lg hover:bg-red-800">
+            Back to Selection
         </Link>
-        <Link href="/checkoutPage" className="flex bg-green-700 text-white text-3xl text-center items-center w-1/6 h-1/2 py-2 px-4 rounded-lg hover:bg-green-800">
-          Complete Order
-        </Link>
+        <button 
+          onClick={handleCheckout} 
+          className="flex bg-green-700 text-white text-3xl text-center items-center w-1/6 h-1/2 py-2 px-4 rounded-lg hover:bg-green-800">
+            Complete Order
+        </button>
       </div>
     </div>
   );
