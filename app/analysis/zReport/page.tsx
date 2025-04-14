@@ -42,8 +42,8 @@ export default function zReportPage()
         lastZReportTimeString = lastTimeRanZReport.getFullYear()+"-"+lastZReportTimeString
 
         // If want to set the date values for testing
-        // currentTimeString="2023-08-01 23:00"
-        // lastZReportTimeString="2023-08-01 00:00"
+        // lastZReportTimeString="2025-04-14 00:00"
+        // currentTimeString="2025-04-14 23:00"
 
         // Quering database
         const query =  "SELECT SUM(totalamount) AS total, EXTRACT(HOUR FROM transactiontime) AS hour FROM transaction WHERE transactiontime BETWEEN '" + lastZReportTimeString + "' AND '" + currentTimeString + "' GROUP BY hour"
@@ -51,10 +51,28 @@ export default function zReportPage()
         if (!response.ok)
             throw new Error("Failed to get z report");
         const data = await response.json();
+        
         setQueryResults(qR=>data.totalPerHours)
         setQueryResults(qR=>qR.toSorted((a,b) => a.hour - b.hour))
+        setQueryResults(qR=>{
+          let answer = [...qR]
+          let currentHour=0
+          for(let i=0; i<answer.length;i++){
+              while(answer[i].hour!=currentHour) {
+                answer.splice(i,0, {total:"0", hour:currentHour})
+                currentHour++
+                i++
+              }
+              currentHour++
+          }
+          while(currentHour!=24) {
+              answer.push({total:"0", hour:currentHour})
+              currentHour++;
+          }
+          return answer
+        })
         setZReportTime(currentTime)
-    
+        setLoading(false)
       } catch (error) {
         console.error("Error making z report:", error);
       }
@@ -69,20 +87,22 @@ export default function zReportPage()
           <h1 className="text-4xl font-bold text-center">Z Report</h1>
           {/* <p className="text-center mt-2 text-lg">View statistics about the store</p> */}
         </header>
-
         <div className = "grid gap-y-2 justify-items-center">
-          {/* <h1 className="text-black">Z Report</h1> */}
-          <div className="grid grid-cols-2 grid-rows-25 justify-items-center grid-flow-col gap-x-2">
+          <div className = "grid grid-cols-2 grid-rows-1 justify-items-center grid-flow-col gap-x-2">
             <h2 className="text-xl font-semibold underline text-black">Hour</h2>
+            <h2 className="text-xl font-semibold underline text-black">Total</h2>
+          </div>
+          <div className="grid grid-cols-2 grid-rows-24 justify-items-center grid-flow-col gap-x-2">
+            
             {
               queryResults.length>0 ? 
                 queryResults.map((qR, index) => <h1 className="text-black" key={index}>{qR.hour}</h1>)
                 :twentyFourElements.map((_, index) => <h1 className="text-black" key={index}>{loading? "Loading" : "No data"}</h1>)
             }
-            <h2 className="text-xl font-semibold underline text-black">Total</h2>
+            
             {
               queryResults.length>0 ? 
-              queryResults.map((qR, index) => <h1 className="text-black" key={index}>{qR.total}</h1>)
+              queryResults.map((qR, index) => <h1 className="text-black" key={index}>${qR.total}</h1>)
               :twentyFourElements.map((_, index) => <h1 className="text-black" key={index}>{loading? "Loading" : "No data"}</h1>)
             }
           </div>

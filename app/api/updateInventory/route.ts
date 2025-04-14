@@ -32,9 +32,24 @@ export async function POST(request: Request) {
       console.log("Transaction ID: ", transactionID);
       console.log(transactionQuery.rows);
 
+      // Getting current time
+      const currentTime = new Date()
+        const options: Intl.DateTimeFormatOptions = {
+          hour12:false,
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+        let currentTimeString = currentTime.toLocaleString("en-US", options)
+        currentTimeString = currentTimeString.replaceAll("/","-")
+        currentTimeString = currentTimeString.replaceAll(",","")
+        currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
+
+
       await pool.query(
-        `INSERT INTO transaction VALUES ($1, $2, now(), $3, $4)`,
-        [transactionID, 7, 2, totalIngredientsUsed]
+        `INSERT INTO transaction VALUES ($1, $2, $3, $4, $5)`,
+        [transactionID, 7, currentTimeString, 2, totalIngredientsUsed]
       );
 
 

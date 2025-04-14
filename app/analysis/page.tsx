@@ -122,11 +122,11 @@ export default function analysisPage()
               <Link className="self-start ml-4" href={{ pathname: "/managerHome"}}>
                     <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Go back to Manager Home</button>
               </Link>
-            <div className="ml-auto flex flex-row p-1 justify-center mr-auto">
+            <div className="mx-auto flex flex-row p-1">
               <p className = "text-black inline font-semibold">Start Date:</p>
-              <DatePicker className = "text-black  px-1" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
+              <DatePicker className = "text-black px-1 w-[100px]" selected={analysisStart} onChange={(date) => date && setAnalysisStart(date)}/>
               <p className = "text-black inline font-semibold">End Date:</p>
-              <DatePicker className = "text-black  px-1" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
+              <DatePicker className = "text-black px-1 w-[100px]" selected={analysisEnd} onChange={(date) => date && setAnalysisEnd(date)}/>
               <button onClick={()=>updateChart()} className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Create Chart</button>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default function analysisPage()
           <Link className="m-4" href={{ pathname: "/analysis/xReport"}}>
                 <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate XReport</button>
           </Link>
-          <Link href={{ pathname: "/analysis/zReport"}}>
+          <Link className="m-4" href={{ pathname: "/analysis/zReport"}}>
                 <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Generate ZReport</button>
           </Link>
         </div>

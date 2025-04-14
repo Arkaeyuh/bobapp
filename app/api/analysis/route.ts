@@ -5,6 +5,7 @@ export async function GET(request: Request)
 {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("query");
+    // console.log(query)
     try {
         const pool = getPool();
         const totalPerHourResult = await pool.query(query || "")

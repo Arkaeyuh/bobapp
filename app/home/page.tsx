@@ -40,16 +40,16 @@ export default function HomePage() {
       <main className="flex flex-col items-center mt-10 px-4">
         <h2 className="text-2xl font-semibold mb-4 text-black">Our Specialties</h2>
         {/* //TODO: delete this later if we dont need to use */}
-        {/* <div className="text-center mb-8 text-gray-700"> */}
-          {/* Manager Page Link
+        {/* <div className="text-center mb-8 text-gray-700">
+          Manager Page Link
           <Link href="/managerHome">
             <p className="text-blue-500 hover:underline">Manager Page</p>
-          </Link> */}
-          {/* Order Summary Link */}
-          {/* <Link href="/orderSummary">
+          </Link>
+          Order Summary Link
+          <Link href="/orderSummary">
             <p className="text-blue-500 hover:underline">Go to Checkout</p>
-          </Link> */}
-        {/* </div> */}
+          </Link>
+        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Milk Tea */}
           <Link href={{ pathname: "/itemSelection", query: { category: "Tea" } }}>

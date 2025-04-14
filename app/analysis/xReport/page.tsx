@@ -51,8 +51,26 @@ export default function xReportPage()
         if (!response.ok)
             throw new Error("Failed to get x report");
         const data = await response.json();
+        
         setQueryResults(qR=>data.totalPerHours)
         setQueryResults(qR=>qR.toSorted((a,b) => a.hour - b.hour))
+        setQueryResults(qR=>{
+          let answer = [...qR]
+          let currentHour=0
+          for(let i=0; i<answer.length;i++){
+              while(answer[i].hour!=currentHour) {
+                answer.splice(i,0, {total:"0", hour:currentHour})
+                currentHour++
+                i++
+              }
+              currentHour++
+          }
+          while(currentHour!=24) {
+              answer.push({total:"0", hour:currentHour})
+              currentHour++;
+          }
+          return answer
+        })
         setLoading(false);
       } catch (error) {
         console.error("Error making x report:", error);
@@ -68,20 +86,22 @@ export default function xReportPage()
           <h1 className="text-4xl font-bold text-center">X Report</h1>
           {/* <p className="text-center mt-2 text-lg">View statistics about the store</p> */}
         </header>
-
         <div className = "grid gap-y-2 justify-items-center">
-          {/* <h1 className="text-black">X Report</h1> */}
-          <div className="grid grid-cols-2 grid-rows-25 justify-items-center grid-flow-col gap-x-2">
+          <div className = "grid grid-cols-2 grid-rows-1 justify-items-center grid-flow-col gap-x-2">
             <h2 className="text-xl font-semibold underline text-black">Hour</h2>
+            <h2 className="text-xl font-semibold underline text-black">Total</h2>
+          </div>
+          <div className="grid grid-cols-2 grid-rows-24 justify-items-center grid-flow-col gap-x-2">
+            
             {
               queryResults.length>0 ? 
                 queryResults.map((qR, index) => <h1 className="text-black" key={index}>{qR.hour}</h1>)
                 :twentyFourElements.map((_, index) => <h1 className="text-black" key={index}>{loading? "Loading" : "No data"}</h1>)
             }
-            <h2 className="text-xl font-semibold underline text-black">Total</h2>
+            
             {
               queryResults.length>0 ? 
-              queryResults.map((qR, index) => <h1 className="text-black" key={index}>{qR.total}</h1>)
+              queryResults.map((qR, index) => <h1 className="text-black" key={index}>${qR.total}</h1>)
               :twentyFourElements.map((_, index) => <h1 className="text-black" key={index}>{loading? "Loading" : "No data"}</h1>)
             }
           </div>
