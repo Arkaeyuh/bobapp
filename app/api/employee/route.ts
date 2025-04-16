@@ -6,7 +6,7 @@ import { getPool } from "@/lib/db";
 export async function GET() {
   try {
     const pool = await getPool();
-    const result = await pool.query("SELECT * FROM employee");
+    const result = await pool.query("SELECT * FROM employee where employeeid != 0");
 
     return NextResponse.json({ success: true, employees: result.rows });
   } catch (error) {

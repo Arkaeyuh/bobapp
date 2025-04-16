@@ -1,6 +1,5 @@
 'use client'
 import React, {useEffect, useState, Suspense} from 'react'
-import { useCart} from '@/components/cartContext'
 import Link from 'next/link'
 
 interface totalAndHour {
@@ -11,7 +10,6 @@ interface totalAndHour {
 export default function xReportPage()
 {
     const [loading, setLoading] = useState(true);
-    const {lastTimeRanZReport}  = useCart();
     const [queryResults, setQueryResults] = useState<totalAndHour[]>([]);
 
     useEffect(() => {
@@ -19,67 +17,64 @@ export default function xReportPage()
     }, []);
 
     async function getXReport() {
-      try {
-        // Setting up string for the current time
-        const currentTime = new Date()
-        const options: Intl.DateTimeFormatOptions = {
-          hour12:false,
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }
+      if(loading) {
+        try {
+          // Setting up string for the current time
+          const currentTime = new Date()
+          const options: Intl.DateTimeFormatOptions = {
+            hour12:false,
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          }
 
-        let currentTimeString = currentTime.toLocaleString("en-US", options)
-        currentTimeString = currentTimeString.replaceAll("/","-")
-        currentTimeString = currentTimeString.replaceAll(",","")
-        currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
+          let currentTimeString = currentTime.toLocaleString("en-US", options)
+          currentTimeString = currentTimeString.replaceAll("/","-")
+          currentTimeString = currentTimeString.replaceAll(",","")
+          currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
 
-        // Setting up string for the previous time ran z report 
-        let lastZReportTimeString = lastTimeRanZReport.toLocaleString("en-US", options)
-        lastZReportTimeString = lastZReportTimeString.replaceAll("/","-")
-        lastZReportTimeString = lastZReportTimeString.replaceAll(",","")
-        lastZReportTimeString = lastTimeRanZReport.getFullYear()+"-"+lastZReportTimeString
+          // Quering database
+          const query =  "SELECT SUM(totalamount) AS total, EXTRACT(HOUR FROM transactiontime) AS hour FROM transaction WHERE transactiontime BETWEEN (select transactiontime from transaction where employeeid=0 order by transactiontime desc limit 1) AND '" + currentTimeString + "' GROUP BY hour"
+          const response = await fetch(`/api/analysis?query=${encodeURIComponent(query)}`, {method: 'Get'});
+          if (!response.ok)
+              throw new Error("Failed to get x report");
+          const data = await response.json();
+          
+          setQueryResults(qR=>data.totalPerHours)
+          setQueryResults(qR=>qR.toSorted((a,b) => a.hour - b.hour))
 
-        // If want to set the date values for testing
-        // currentTimeString="2023-08-01 23:00"
-        // lastZReportTimeString="2023-08-01 00:00"
-
-        // Quering database
-        const query =  "SELECT SUM(totalamount) AS total, EXTRACT(HOUR FROM transactiontime) AS hour FROM transaction WHERE transactiontime BETWEEN '" + lastZReportTimeString + "' AND '" + currentTimeString + "' GROUP BY hour"
-        const response = await fetch(`/api/analysis?query=${encodeURIComponent(query)}`, {method: 'Get'});
-        if (!response.ok)
-            throw new Error("Failed to get x report");
-        const data = await response.json();
-        
-        setQueryResults(qR=>data.totalPerHours)
-        setQueryResults(qR=>qR.toSorted((a,b) => a.hour - b.hour))
-        setQueryResults(qR=>{
-          let answer = [...qR]
-          let currentHour=0
-          for(let i=0; i<answer.length;i++){
+          // Adding dummy data for hours not in result
+          setQueryResults(qR=>{
+            let answer = [...qR]
+            let currentHour=0
+            for(let i=0; i<answer.length;i++){
+              if(answer[i].total=="0.00")
+                  answer[i].total="0"
               while(answer[i].hour!=currentHour) {
                 answer.splice(i,0, {total:"0", hour:currentHour})
                 currentHour++
                 i++
               }
               currentHour++
-          }
-          while(currentHour!=24) {
-              answer.push({total:"0", hour:currentHour})
-              currentHour++;
-          }
-          return answer
-        })
-        setLoading(false);
-      } catch (error) {
-        console.error("Error making x report:", error);
+            }
+            while(currentHour!=24) {
+                answer.push({total:"0", hour:currentHour})
+                currentHour++;
+            }
+            return answer
+          })
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error making x report:", error);
+        }
       }
     }
 
-        // This is used to display dummy info while waiting for the query to complete or if database returned no data
-        const twentyFourElements:number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+    // This is used to display dummy info while waiting for the query to complete or if database returned no data
+    const twentyFourElements:number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
 
     return(
       <div className="bg-gray-100 min-h-screen">
