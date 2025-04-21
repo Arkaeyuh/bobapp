@@ -27,8 +27,6 @@ interface cartContextType {
     addToCart: (item:Item) => void
     removeFromCart: (index:number) => void
     clearCart: () => void
-    lastTimeRanZReport: Date
-    setZReportTime : (date:Date) => void
 }
 
 interface Props{
@@ -40,18 +38,12 @@ export const CartContext = createContext<cartContextType>({
   addToCart: (item:Item)=>{}, 
   removeFromCart: (index:number)=>{},
   clearCart: () => {},
-  lastTimeRanZReport: new Date(),
-  setZReportTime : (date:Date) => {}
 });
 
 export function CartProvider({children}:Props) {
   // setup for cart variable, addToCart method, and removeFromCart method
   const [cart, setCart] = useState<Item[]>([]);
   
-  // const testDate = new Date(2023, 8, 1, 0, 0, 0)
-  // const [lastTimeRanZReport, setLastTimeRanZReport] = useState<Date>(testDate);
-  const [lastTimeRanZReport, setLastTimeRanZReport] = useState<Date>(new Date());
-
   function addToCart(item:Item) {
     setCart(c => [...c, item]);
   }
@@ -65,12 +57,8 @@ export function CartProvider({children}:Props) {
     setCart([]);
   }
 
-  function setZReportTime(date:Date) {
-    setLastTimeRanZReport(d => date);
-  }
-
   return (
-    <CartContext.Provider value={{cart, addToCart, removeFromCart, clearCart, lastTimeRanZReport, setZReportTime}}>
+    <CartContext.Provider value={{cart, addToCart, removeFromCart, clearCart}}>
       {children}
     </CartContext.Provider>
   );

@@ -169,6 +169,13 @@ export default function ManageItem() {
           Manage Seasonal Items
         </button>
 
+        <button
+          onClick={() => (window.location.href = "/managerHome")}
+          className="mb-4 ml-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow opacity-90 transition hover:bg-green-700 hover:opacity-100 hover:scale-105 duration-200"
+        >
+          Home
+        </button>
+
         <ul className="space-y-5">
           {items.map((item) => (
             <li

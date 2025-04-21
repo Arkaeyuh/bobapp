@@ -1,6 +1,5 @@
 'use client'
 import React, {useEffect, useState, Suspense} from 'react'
-import { useCart} from '@/components/cartContext'
 import Link from 'next/link'
 
 interface totalAndHour {
@@ -11,71 +10,70 @@ interface totalAndHour {
 export default function zReportPage()
 {
   const [loading, setLoading] = useState(true);
-    const {lastTimeRanZReport, setZReportTime}  = useCart();
-    const [queryResults, setQueryResults] = useState<totalAndHour[]>([]);
+  const [queryResults, setQueryResults] = useState<totalAndHour[]>([]);
 
     useEffect(() => {
         getZReport();
     }, []);
 
     async function getZReport() {
-      try {
-        // Setting up string for the current time
-        const currentTime = new Date()
-        const options: Intl.DateTimeFormatOptions = {
-          hour12:false,
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }
+      if(loading) {
+        try {
+          // Setting up string for the current time
+          const currentTime = new Date()
+          const options: Intl.DateTimeFormatOptions = {
+            hour12:false,
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          }
 
-        let currentTimeString = currentTime.toLocaleString("en-US", options)
-        currentTimeString = currentTimeString.replaceAll("/","-")
-        currentTimeString = currentTimeString.replaceAll(",","")
-        currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
+          let currentTimeString = currentTime.toLocaleString("en-US", options)
+          currentTimeString = currentTimeString.replaceAll("/","-")
+          currentTimeString = currentTimeString.replaceAll(",","")
+          currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
 
-        // Setting up string for the previous time ran z report 
-        let lastZReportTimeString = lastTimeRanZReport.toLocaleString("en-US", options)
-        lastZReportTimeString = lastZReportTimeString.replaceAll("/","-")
-        lastZReportTimeString = lastZReportTimeString.replaceAll(",","")
-        lastZReportTimeString = lastTimeRanZReport.getFullYear()+"-"+lastZReportTimeString
+          // Quering database
+          const query =  "SELECT SUM(totalamount) AS total, EXTRACT(HOUR FROM transactiontime) AS hour FROM transaction WHERE transactiontime BETWEEN (select transactiontime from transaction where employeeid=0 order by transactiontime desc limit 1) AND '" + currentTimeString + "' GROUP BY hour"
+          const response = await fetch(`/api/analysis?query=${encodeURIComponent(query)}`, {method: 'Get'});
+          if (!response.ok)
+              throw new Error("Failed to get z report");
+          const data = await response.json();
+          
+          setQueryResults(qR=>data.totalPerHours)
+          setQueryResults(qR=>qR.toSorted((a,b) => a.hour - b.hour))
 
-        // If want to set the date values for testing
-        // lastZReportTimeString="2025-04-14 00:00"
-        // currentTimeString="2025-04-14 23:00"
-
-        // Quering database
-        const query =  "SELECT SUM(totalamount) AS total, EXTRACT(HOUR FROM transactiontime) AS hour FROM transaction WHERE transactiontime BETWEEN '" + lastZReportTimeString + "' AND '" + currentTimeString + "' GROUP BY hour"
-        const response = await fetch(`/api/analysis?query=${encodeURIComponent(query)}`, {method: 'Get'});
-        if (!response.ok)
-            throw new Error("Failed to get z report");
-        const data = await response.json();
-        
-        setQueryResults(qR=>data.totalPerHours)
-        setQueryResults(qR=>qR.toSorted((a,b) => a.hour - b.hour))
-        setQueryResults(qR=>{
-          let answer = [...qR]
-          let currentHour=0
-          for(let i=0; i<answer.length;i++){
+          // Adding dummy data for hours not in result
+          setQueryResults(qR=>{
+            let answer = [...qR]
+            let currentHour=0
+            for(let i=0; i<answer.length;i++){
+              if(answer[i].total=="0.00")
+                  answer[i].total="0"
               while(answer[i].hour!=currentHour) {
                 answer.splice(i,0, {total:"0", hour:currentHour})
                 currentHour++
                 i++
               }
               currentHour++
-          }
-          while(currentHour!=24) {
-              answer.push({total:"0", hour:currentHour})
-              currentHour++;
-          }
-          return answer
-        })
-        setZReportTime(currentTime)
-        setLoading(false)
-      } catch (error) {
-        console.error("Error making z report:", error);
+            }
+            while(currentHour!=24) {
+                answer.push({total:"0", hour:currentHour})
+                currentHour++;
+            }
+            return answer
+          })
+
+          // Updating last time ran z report
+          const query2 =  "INSERT INTO transaction VALUES ((SELECT COUNT(transactionID) FROM transaction)+1, 0, '"+currentTimeString+"', 0, 0)"
+          await fetch(`/api/analysis?query=${encodeURIComponent(query2)}`, {method: 'Post'})
+          
+          setLoading(false)
+        } catch (error) {
+          console.error("Error making z report:", error);
+        }
       }
     }
 
