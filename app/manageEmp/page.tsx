@@ -8,6 +8,7 @@ export default function ManageEmployee() {
     firstname: string;
     lastname: string;
     ismanager: boolean;
+    isactive: boolean;
   }
 
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -19,6 +20,7 @@ export default function ManageEmployee() {
     firstname: "",
     lastname: "",
     ismanager: false,
+    isactive: true,
   });
 
   useEffect(() => {
@@ -30,6 +32,7 @@ export default function ManageEmployee() {
       const res = await fetch("/api/employee");
       if (!res.ok) throw new Error("Failed to fetch employees");
       const data = await res.json();
+      console.log(data);
       setEmployees(data.employees);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -58,7 +61,12 @@ export default function ManageEmployee() {
 
       setEmployees([...employees, employeeData]);
       setShowModal(false);
-      setNewEmployee({ firstname: "", lastname: "", ismanager: false });
+      setNewEmployee({
+        firstname: "",
+        lastname: "",
+        ismanager: false,
+        isactive: true,
+      });
     } catch (error) {
       console.error("Error adding employee:", error);
     }
@@ -72,16 +80,20 @@ export default function ManageEmployee() {
     }));
   }
 
-  async function removeEmployee(employeeid: number, e: React.MouseEvent) {
+  async function removeEmployee(
+    employeeid: number,
+    isactive: boolean,
+    e: React.MouseEvent
+  ) {
     e.stopPropagation();
     try {
       const response = await fetch(`/api/employee`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ employeeid }),
+        body: JSON.stringify({ employeeid, isactive }),
       });
       if (!response.ok) throw new Error("Failed to remove employee");
-      setEmployees(employees.filter((e) => e.employeeid !== employeeid));
+      fetchEmployees();
     } catch (error) {
       console.error("Error removing employee:", error);
     }
@@ -130,10 +142,16 @@ export default function ManageEmployee() {
                 </p>
               </div>
               <button
-                onClick={(e) => removeEmployee(employee.employeeid, e)}
-                className="px-3 py-1 bg-red-500 text-white rounded-lg shadow opacity-90 hover:bg-red-600 hover:opacity-100 transition hover:scale-105 duration-200"
+                onClick={(e) =>
+                  removeEmployee(employee.employeeid, employee.isactive, e)
+                }
+                className={`px-3 py-1 ${
+                  employee.isactive ? "bg-red-500" : "bg-green-500"
+                } text-white rounded-lg shadow opacity-90 hover:${
+                  employee.isactive ? "bg-red-600" : "bg-green-600"
+                } hover:opacity-100 transition hover:scale-105 duration-200`}
               >
-                Remove
+                {employee.isactive ? "Set to Inactive" : "Set to Active"}
               </button>
             </li>
           ))}
@@ -205,6 +223,10 @@ export default function ManageEmployee() {
             <p className="text-gray-200">
               <strong>Role:</strong>{" "}
               {selectedEmployee.ismanager ? "Manager" : "Staff"}
+            </p>
+            <p className="text-gray-200">
+              <strong>Status:</strong>{" "}
+              {selectedEmployee.isactive ? "Active" : "Inactive"}
             </p>
             <button
               onClick={closeEmployeeModal}

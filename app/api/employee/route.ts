@@ -6,7 +6,9 @@ import { getPool } from "@/lib/db";
 export async function GET() {
   try {
     const pool = await getPool();
-    const result = await pool.query("SELECT * FROM employee where employeeid != 0");
+    const result = await pool.query(
+      "SELECT * FROM employee where employeeid != 0"
+    );
 
     return NextResponse.json({ success: true, employees: result.rows });
   } catch (error) {
@@ -48,11 +50,18 @@ export async function DELETE(req: Request) {
     const pool = await getPool();
     const body = await req.json();
 
-    const { employeeid } = body;
-
-    await pool.query("DELETE FROM employee WHERE employeeid = $1", [
-      employeeid,
-    ]);
+    const { employeeid, isactive } = body;
+    if (isactive) {
+      await pool.query(
+        "UPDATE employee SET isactive = FALSE WHERE employeeid = $1",
+        [employeeid]
+      );
+    } else {
+      await pool.query(
+        "UPDATE employee SET isactive = TRUE WHERE employeeid = $1",
+        [employeeid]
+      );
+    }
 
     return NextResponse.json({
       success: true,

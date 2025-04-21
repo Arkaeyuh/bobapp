@@ -39,8 +39,10 @@ export default function managerHome() {
       <div className="flex flex-row w-full items-center justify-center mb-10">
         <div className="flex flex-col w-1/4 bg-white rounded-lg shadow-md p-6">
           <Link href="/manageEmp">
-            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
-                              shadow-md text-center transform transition-transform duration-300 hover:scale-105">
+            <div
+              className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105"
+            >
               <h3 className="text-xl font-bold mb-2 text-black">
                 Manage Employees
               </h3>
@@ -50,8 +52,10 @@ export default function managerHome() {
             </div>
           </Link>
           <Link href="/manageIngre">
-            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
-                              shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4">
+            <div
+              className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4"
+            >
               <h3 className="text-xl font-bold mb-2 text-black">
                 Manage Ingredients
               </h3>
@@ -63,17 +67,23 @@ export default function managerHome() {
         </div>
         <div className="w-1/4 bg-white rounded-lg shadow-md p-6 mx-4">
           <Link href="/manageItem">
-            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
-                              shadow-md text-center transform transition-transform duration-300 hover:scale-105">
-              <h3 className="text-xl font-bold mb-2 text-black">Manage Items</h3>
+            <div
+              className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105"
+            >
+              <h3 className="text-xl font-bold mb-2 text-black">
+                Manage Items
+              </h3>
               <p className="text-gray-700">
                 Add, remove, or update menu items.
               </p>
             </div>
           </Link>
           <Link href="/weather">
-            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
-                              shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4">
+            <div
+              className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105 mt-4"
+            >
               <h3 className="text-xl font-bold mb-2 text-black">
                 View Weather
               </h3>
@@ -85,9 +95,13 @@ export default function managerHome() {
         </div>
         <div className="w-1/4 bg-white rounded-lg shadow-md p-6 mr-4">
           <Link href="/analysis">
-            <div className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
-                              shadow-md text-center transform transition-transform duration-300 hover:scale-105">
-              <h3 className="text-xl font-bold mb-2 text-black">Analysis and Reports</h3>
+            <div
+              className="flex flex-col justify-center cursor-pointer h-40 bg-white p-6 rounded-lg 
+                              shadow-md text-center transform transition-transform duration-300 hover:scale-105"
+            >
+              <h3 className="text-xl font-bold mb-2 text-black">
+                Analysis and Reports
+              </h3>
               <p className="text-gray-700">
                 Analyze ingredient usage and create reports.
               </p>
