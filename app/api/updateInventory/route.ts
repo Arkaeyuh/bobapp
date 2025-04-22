@@ -3,11 +3,16 @@
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import { getPool } from "@/lib/db";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth"; 
 
 export async function POST(request: Request) {
   try {
     // Parse the JSON request body
     const ingredients: { ingredientID: number; quantityUsed: number }[] = await request.json();
+    // Current session so we can get data about the user
+
+    const session = await getServerSession(authOptions);
 
     let totalIngredientsUsed = 0;
 
@@ -47,12 +52,37 @@ export async function POST(request: Request) {
         currentTimeString = currentTimeString.replaceAll(",","")
         currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
 
+        //Seems like what's going on here is setting a fixed price of 7 for the transaction, with employeeid 2?
+      // await pool.query(
+      //   `INSERT INTO transaction VALUES ($1, $2, $3, $4, $5)`,
+      //   [transactionID, 7, currentTimeString, 2, totalIngredientsUsed]
+      // );
+        
 
-      await pool.query(
-        `INSERT INTO transaction VALUES ($1, $2, $3, $4, $5)`,
-        [transactionID, 7, currentTimeString, 2, totalIngredientsUsed]
-      );
+      // What we need to do:
+      // Get the user role from the session, and use that to get the employeeID from the employee table.
+      // Lets use employee id 0 for transactions associated with customers, and the regular employee id for those with employees
 
+
+        let employeeID: Number;
+
+        if (session?.user.role === "employee"){
+          employeeID = session?.user.employeeid;
+        } else{
+          employeeID = 0;
+        }
+
+        // Debugging: Log variables passed into the transaction query
+        console.log("Transaction ID:", transactionID);
+        console.log("Total Amount:", 7); // Fixed price for now
+        console.log("Transaction Time:", currentTimeString);
+        console.log("Employee ID:", employeeID);
+        console.log("Total Ingredients Used:", totalIngredientsUsed);
+
+        await pool.query(
+          `INSERT INTO transaction (transactionID, totalAmount, transactionTime, employeeID, numIngredientsUsed) VALUES ($1, $2, $3, $4, $5)`,
+          [transactionID, 7, currentTimeString, employeeID, totalIngredientsUsed]
+        );
 
       for (const { ingredientID, quantityUsed } of ingredients) {
         await pool.query(

@@ -5,8 +5,9 @@ declare module "next-auth" {
         id: string;
         email: string;
         password: string;
-        employeeid?: string; 
+        employeeid?: Number; 
         ismanager?: boolean;  
+        role?: string;
         isemployee?: boolean;
         password?: string;
       }
@@ -16,6 +17,7 @@ declare module "next-auth" {
       email: string;
       role: string;
       ismanager: boolean;
+      employeeid: Number;
     };
   }
 

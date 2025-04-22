@@ -4,6 +4,7 @@ import { FormEvent, useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { FcGoogle } from "react-icons/fc"; // Import the Google logo icon
 
 export default function Login() {
   const router = useRouter();
@@ -30,9 +31,8 @@ export default function Login() {
   // Redirect based on session once it's authenticated
   useEffect(() => {
     if (status === "authenticated") {
-      if (session?.user?.ismanager) {
+      if (session?.user?.ismanager && session?.user?.role === "employee") {
         router.push("/managerHome"); // Manager-specific home page
-        //TODO: Figure out how we want to handle letting a manager order...
       } else {
         router.push("/home"); // Regular user home page
       }
@@ -78,6 +78,19 @@ export default function Login() {
             Login
           </button>
         </form>
+
+        {/* Google Sign-In Button */}
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={() => signIn("google")}
+            className="p-3 bg-gray-100 text-black rounded-lg hover:bg-gray-200 transition w-full flex items-center justify-center gap-2"
+          >
+            <FcGoogle size={24} /> {/* Google logo */}
+            Sign in with Google
+          </button>
+        </div>
+
         <p className="text-center mt-4 text-black">
           New user?{" "}
           <a href="/signup" className="text-blue-500 hover:underline">
