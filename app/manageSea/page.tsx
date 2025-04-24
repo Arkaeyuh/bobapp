@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 export default function ManageItem() {
+  // Interface for Seasonal items
   interface Seasonal {
     seasonalid: number;
     name: string;
@@ -11,6 +12,7 @@ export default function ManageItem() {
     category: string;
   }
 
+  // Interface for regular items
   interface Item {
     itemid: number;
     name: string;
@@ -19,9 +21,13 @@ export default function ManageItem() {
     category: string;
   }
 
+  // State to store the list of seasonal items
   const [items, setItems] = useState<Seasonal[]>([]);
+  // State to control the visibility of the modal
   const [showModal, setShowModal] = useState(false);
+  // State to store the currently selected item for details view
   const [selectedItem, setSelectedItem] = useState<Seasonal | null>(null);
+  // State to store the new item being added
   const [newItem, setNewItem] = useState({
     name: "",
     ingredientid: 0,
@@ -29,10 +35,12 @@ export default function ManageItem() {
     category: "",
   });
 
+  // Fetch items when the component is mounted
   useEffect(() => {
     fetchItems();
   }, []);
 
+  // Function to fetch seasonal items from the API
   async function fetchItems() {
     try {
       const response = await fetch("/api/seasonal");
@@ -44,6 +52,7 @@ export default function ManageItem() {
     }
   }
 
+  // Function to add a new seasonal item
   async function addItem() {
     if (!newItem.name || !newItem.category) {
       alert("Please fill in all fields.");
@@ -64,6 +73,7 @@ export default function ManageItem() {
 
       if (!response.ok) throw new Error("Failed to add seasonal");
 
+      // Update the state with the new item
       setItems([...items, itemData]);
       setShowModal(false);
       setNewItem({
@@ -77,8 +87,9 @@ export default function ManageItem() {
     }
   }
 
+  // Function to remove a seasonal item
   async function removeItem(itemid: number, e: React.MouseEvent) {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent triggering parent click events
     try {
       const response = await fetch(`/api/seasonal`, {
         method: "DELETE",
@@ -86,32 +97,39 @@ export default function ManageItem() {
         body: JSON.stringify({ seasonalid: itemid }),
       });
       if (!response.ok) throw new Error("Failed to remove item");
+      // Update the state to remove the item
       setItems(items.filter((i) => i.seasonalid !== itemid));
     } catch (error) {
       console.error("Error removing item:", error);
     }
   }
 
+  // Function to handle clicking on an item to view details
   function handleItemClick(item: Seasonal) {
     setSelectedItem(item);
   }
 
+  // Function to close the item details modal
   function closeItemModal() {
     setSelectedItem(null);
   }
 
+  // Function to merge seasonal items into regular items
   async function mergeItems() {
     try {
+      // Fetch all seasonal items
       const response = await fetch("/api/seasonal");
       if (!response.ok) throw new Error("Failed to fetch seasonal items");
       const data = await response.json();
       const seasonalItems = data.items;
 
+      // Fetch all existing regular items
       const itemRes = await fetch("/api/item");
       if (!itemRes.ok) throw new Error("Failed to fetch existing items");
       const itemData = await itemRes.json();
       let len = itemData.items.length;
 
+      // Add each seasonal item as a regular item
       for (const seasonalItem of seasonalItems) {
         const d = {
           itemid: ++len,
@@ -136,6 +154,7 @@ export default function ManageItem() {
         }
       }
 
+      // Delete all seasonal items after merging
       for (const item of seasonalItems) {
         await fetch("/api/seasonal", {
           method: "DELETE",
@@ -144,6 +163,7 @@ export default function ManageItem() {
         });
       }
 
+      // Clear the state after merging
       setItems([]);
 
       alert("All seasonal items have been merged successfully.");
@@ -152,6 +172,7 @@ export default function ManageItem() {
     }
   }
 
+  // Function to handle input changes in the modal form
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setNewItem((prev) => ({
@@ -162,11 +183,13 @@ export default function ManageItem() {
 
   return (
     <div className="p-8 bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen">
+      {/* Page title */}
       <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-8">
         Manage Seasonal Items
       </h1>
 
       <div className="max-w-2xl mx-auto">
+        {/* Button to open the modal for adding a new seasonal item */}
         <button
           onClick={() => setShowModal(true)}
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
@@ -174,6 +197,7 @@ export default function ManageItem() {
           Add Seasonal Item
         </button>
 
+        {/* Button to merge seasonal items into regular items */}
         <button
           onClick={() => mergeItems()}
           className="mb-4 ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
@@ -181,6 +205,7 @@ export default function ManageItem() {
           Merge Seasonal Items
         </button>
 
+        {/* Button to navigate to the Manage Item page */}
         <button
           onClick={() => {
             window.location.href = "/manageItem";
@@ -190,6 +215,7 @@ export default function ManageItem() {
           Manage Item
         </button>
 
+        {/* List of seasonal items */}
         <ul className="space-y-5">
           {items.map((item) => (
             <li
@@ -197,6 +223,7 @@ export default function ManageItem() {
               className="p-5 bg-white shadow-lg rounded-xl flex items-center justify-between border border-gray-200 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl hover:bg-gray-100 hover:shadow-gray-400 duration-200"
               onClick={() => handleItemClick(item)}
             >
+              {/* Item details */}
               <div>
                 <p className="text-xl font-semibold text-gray-800">
                   {item.name}
@@ -205,6 +232,7 @@ export default function ManageItem() {
                   Price: ${item.price} | Category: {item.category}
                 </p>
               </div>
+              {/* Button to remove the item */}
               <button
                 onClick={(e) => removeItem(item.seasonalid, e)}
                 className="px-3 py-1 bg-red-500 text-white rounded-lg shadow opacity-90 hover:bg-red-600 hover:opacity-100 transition hover:scale-105 duration-200"
@@ -216,12 +244,14 @@ export default function ManageItem() {
         </ul>
       </div>
 
+      {/* Modal for adding a new seasonal item */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
             <h2 className="text-2xl font-bold mb-4 text-white">
               Add New Seasonal Item
             </h2>
+            {/* Input fields for the new item */}
             <input
               type="text"
               name="name"
@@ -267,6 +297,7 @@ export default function ManageItem() {
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-white bg-gray-900"
               />
             </div>
+            {/* Buttons to cancel or add the new item */}
             <div className="flex justify-end">
               <button
                 onClick={() => setShowModal(false)}
@@ -285,12 +316,14 @@ export default function ManageItem() {
         </div>
       )}
 
+      {/* Modal for displaying details of a selected item */}
       {selectedItem && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
             <h2 className="text-2xl font-bold mb-4 text-gray-100">
               Seasonal Item Details
             </h2>
+            {/* Display item details */}
             <p className="text-gray-200">
               <strong>ID:</strong> {selectedItem.seasonalid}
             </p>
@@ -306,6 +339,7 @@ export default function ManageItem() {
             <p className="text-gray-200">
               <strong>Category:</strong> {selectedItem.category}
             </p>
+            {/* Button to close the details modal */}
             <button
               onClick={closeItemModal}
               className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition hover:scale-105 duration-200"

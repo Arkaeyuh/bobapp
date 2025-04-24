@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 export default function ManageItem() {
+  // Define the structure of an Item
   interface Item {
     itemid: number;
     name: string;
@@ -11,6 +12,7 @@ export default function ManageItem() {
     category: string;
   }
 
+  // Define the structure of an Ingredient
   interface Ingredient {
     ingredientid: number;
     name: string;
@@ -18,10 +20,15 @@ export default function ManageItem() {
     maxnum: number;
   }
 
+  // State to store the list of items
   const [items, setItems] = useState<Item[]>([]);
+  // State to store the list of ingredients
   const [ingre, setIngre] = useState<Ingredient[]>([]);
+  // State to control the visibility of the modal
   const [showModal, setShowModal] = useState(false);
+  // State to store the currently selected item
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  // State to store the new item being added
   const [newItem, setNewItem] = useState({
     name: "",
     ingredientid: 0,
@@ -29,14 +36,17 @@ export default function ManageItem() {
     category: "",
   });
 
+  // Fetch items when the component is mounted
   useEffect(() => {
     fetchItems();
   }, []);
 
+  // Fetch ingredients when the component is mounted
   useEffect(() => {
     fetchIngre();
   }, []);
 
+  // Fetch the list of items from the API
   async function fetchItems() {
     try {
       const response = await fetch("/api/item");
@@ -48,6 +58,7 @@ export default function ManageItem() {
     }
   }
 
+  // Fetch the list of ingredients from the API
   async function fetchIngre() {
     try {
       const response = await fetch("/api/ingredient");
@@ -60,6 +71,7 @@ export default function ManageItem() {
     }
   }
 
+  // Check if an ingredient is low in stock
   function isLowStock(ingredientid: number): boolean {
     if (!ingre) {
       console.error("Ingredients data is not available");
@@ -69,6 +81,7 @@ export default function ManageItem() {
     return ingredient ? ingredient.numinstock / ingredient.maxnum < 0.1 : false;
   }
 
+  // Add a new item to the list
   async function addItem() {
     if (!newItem.name || !newItem.category) {
       alert("Please fill in all fields.");
@@ -102,6 +115,7 @@ export default function ManageItem() {
     }
   }
 
+  // Remove an item from the list
   async function removeItem(itemid: number, e: React.MouseEvent) {
     e.stopPropagation();
     try {
@@ -117,14 +131,17 @@ export default function ManageItem() {
     }
   }
 
+  // Handle clicking on an item to view its details
   function handleItemClick(item: Item) {
     setSelectedItem(item);
   }
 
+  // Close the item details modal
   function closeItemModal() {
     setSelectedItem(null);
   }
 
+  // Handle input changes for the new item form
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setNewItem((prev) => ({
@@ -133,6 +150,7 @@ export default function ManageItem() {
     }));
   }
 
+  // Filter items that are low in stock
   const lowStockItems = items.filter((item) => isLowStock(item.ingredientid));
 
   return (
@@ -141,6 +159,7 @@ export default function ManageItem() {
         Manage Items
       </h1>
 
+      {/* Display a warning for low stock items */}
       {lowStockItems.length > 0 && (
         <div className="mb-4 p-4 bg-red-100 border-l-4 border-red-600 text-red-800 rounded">
           <p className="font-semibold">Low Stock Warning:</p>
@@ -153,6 +172,7 @@ export default function ManageItem() {
       )}
 
       <div className="max-w-2xl mx-auto">
+        {/* Button to open the modal for adding a new item */}
         <button
           onClick={() => setShowModal(true)}
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
@@ -160,6 +180,7 @@ export default function ManageItem() {
           Add Item
         </button>
 
+        {/* Button to navigate to manage seasonal items */}
         <button
           onClick={() => {
             window.location.href = "/manageSea";
@@ -169,6 +190,7 @@ export default function ManageItem() {
           Manage Seasonal Items
         </button>
 
+        {/* Button to navigate back to the home page */}
         <button
           onClick={() => (window.location.href = "/managerHome")}
           className="mb-4 ml-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow opacity-90 transition hover:bg-green-700 hover:opacity-100 hover:scale-105 duration-200"
@@ -176,6 +198,7 @@ export default function ManageItem() {
           Home
         </button>
 
+        {/* List of items */}
         <ul className="space-y-5">
           {items.map((item) => (
             <li
@@ -203,6 +226,7 @@ export default function ManageItem() {
                   Price: ${item.price} | Category: {item.category}
                 </p>
               </div>
+              {/* Button to remove an item */}
               <button
                 onClick={(e) => removeItem(item.itemid, e)}
                 className="px-3 py-1 bg-red-500 text-white rounded-lg shadow opacity-90 hover:bg-red-600 hover:opacity-100 transition hover:scale-105 duration-200"
@@ -214,6 +238,7 @@ export default function ManageItem() {
         </ul>
       </div>
 
+      {/* Modal for adding a new item */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
@@ -264,12 +289,14 @@ export default function ManageItem() {
               />
             </div>
             <div className="flex justify-end">
+              {/* Button to cancel adding a new item */}
               <button
                 onClick={() => setShowModal(false)}
                 className="mr-2 px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition duration-200"
               >
                 Cancel
               </button>
+              {/* Button to confirm adding a new item */}
               <button
                 onClick={addItem}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:scale-105 duration-200"
@@ -281,6 +308,7 @@ export default function ManageItem() {
         </div>
       )}
 
+      {/* Modal for viewing item details */}
       {selectedItem && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
@@ -302,6 +330,7 @@ export default function ManageItem() {
             <p className="text-gray-200">
               <strong>Category:</strong> {selectedItem.category}
             </p>
+            {/* Button to close the item details modal */}
             <button
               onClick={closeItemModal}
               className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition hover:scale-105 duration-200"

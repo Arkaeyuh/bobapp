@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
+// Interface to define the structure of weather data
 interface WeatherData {
   temperature: number;
   description: string;
@@ -9,14 +10,16 @@ interface WeatherData {
   weatherCode: number;
 }
 
+// Function to determine background color based on weather code
 const getBackgroundColor = (code: number): string => {
-  if ([61, 63, 65].includes(code)) return "#a4b0be";
-  if ([3, 45, 48].includes(code)) return "#dcdde1";
-  if ([0].includes(code)) return "#f1c40f";
-  if ([71, 73, 75].includes(code)) return "#dff9fb";
-  return "#ffffff";
+  if ([61, 63, 65].includes(code)) return "#a4b0be"; // Rainy weather
+  if ([3, 45, 48].includes(code)) return "#dcdde1"; // Overcast or foggy
+  if ([0].includes(code)) return "#f1c40f"; // Clear sky
+  if ([71, 73, 75].includes(code)) return "#dff9fb"; // Snowy weather
+  return "#ffffff"; // Default background color
 };
 
+// Function to map weather codes to descriptions
 const getDescription = (code: number): string => {
   const map: { [key: number]: string } = {
     0: "Clear sky",
@@ -36,29 +39,31 @@ const getDescription = (code: number): string => {
     75: "Heavy snow",
     95: "Thunderstorm",
   };
-  return map[code] || "Unknown";
+  return map[code] || "Unknown"; // Return "Unknown" if code is not in the map
 };
 
 const WeatherPage = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [currentTime, setCurrentTime] = useState<string>("");
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null); // State to store weather data
+  const [loading, setLoading] = useState(true); // State to track loading status
+  const [currentTime, setCurrentTime] = useState<string>(""); // State to store current time
 
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const city = "College Station";
+        const city = "College Station"; // City for which weather data is fetched
 
+        // Fetch geolocation data for the city
         const geoRes = await fetch(
           `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
             city
           )}&count=1`
         );
         const geoJson = await geoRes.json();
-        const location = geoJson.results[0];
-        const lat = location.latitude;
-        const lon = location.longitude;
+        const location = geoJson.results[0]; // Extract the first result
+        const lat = location.latitude; // Latitude of the city
+        const lon = location.longitude; // Longitude of the city
 
+        // Fetch current weather data using latitude and longitude
         const weatherRes = await fetch(
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
         );
@@ -66,31 +71,37 @@ const WeatherPage = () => {
 
         const { temperature, weathercode, time } = weatherJson.current_weather;
 
+        // Update weather data state
         setWeatherData({
           temperature,
-          description: getDescription(weathercode),
-          time: new Date().toISOString(),
+          description: getDescription(weathercode), // Get description for weather code
+          time: new Date().toISOString(), // Current time in ISO format
           weatherCode: weathercode,
         });
       } catch (error) {
-        console.error("Error fetching weather data:", error);
-        setWeatherData(null);
+        console.error("Error fetching weather data:", error); // Log error
+        setWeatherData(null); // Set weather data to null in case of error
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
-    fetchWeather();
+    fetchWeather(); // Call the function to fetch weather data
 
+    // Update current time every second
     const intervalId = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
     }, 1000);
 
+    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
 
+  // Show loading message while data is being fetched
   if (loading)
     return <div style={{ fontSize: "24px", padding: "40px" }}>Loading...</div>;
+
+  // Show error message if weather data could not be fetched
   if (!weatherData)
     return (
       <div style={{ fontSize: "24px", padding: "40px" }}>
@@ -98,6 +109,7 @@ const WeatherPage = () => {
       </div>
     );
 
+  // Get background color based on weather code
   const backgroundColor = getBackgroundColor(weatherData.weatherCode);
 
   return (
@@ -112,6 +124,7 @@ const WeatherPage = () => {
         color: "#2f3542",
       }}
     >
+      {/* Display weather information */}
       <h1 style={{ fontSize: "3rem", marginBottom: "20px" }}>
         🌤️ Weather in College Station
       </h1>
@@ -124,6 +137,7 @@ const WeatherPage = () => {
       <p style={{ fontSize: "1.5rem", marginTop: "30px", color: "#57606f" }}>
         <strong>Local Time:</strong> {currentTime}
       </p>
+      {/* Button to navigate back to home */}
       <button
         onClick={() => (window.location.href = "/managerHome")}
         style={{

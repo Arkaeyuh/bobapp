@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 export default function ManageEmployee() {
+  // Define the Employee interface
   interface Employee {
     employeeid: number;
     firstname: string;
@@ -11,11 +12,15 @@ export default function ManageEmployee() {
     isactive: boolean;
   }
 
+  // State to store the list of employees
   const [employees, setEmployees] = useState<Employee[]>([]);
+  // State to control the visibility of the "Add Employee" modal
   const [showModal, setShowModal] = useState(false);
+  // State to store the currently selected employee for details view
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   );
+  // State to store the new employee data being added
   const [newEmployee, setNewEmployee] = useState({
     firstname: "",
     lastname: "",
@@ -23,10 +28,12 @@ export default function ManageEmployee() {
     isactive: true,
   });
 
+  // Fetch employees when the component mounts
   useEffect(() => {
     fetchEmployees();
   }, []);
 
+  // Fetch the list of employees from the API
   async function fetchEmployees() {
     try {
       const res = await fetch("/api/employee");
@@ -39,18 +46,22 @@ export default function ManageEmployee() {
     }
   }
 
+  // Add a new employee to the list
   async function addEmployee() {
+    // Validate input fields
     if (!newEmployee.firstname || !newEmployee.lastname) {
       alert("Please fill in all fields.");
       return;
     }
 
+    // Prepare the new employee data
     const employeeData: Employee = {
       employeeid: employees.length + 1,
       ...newEmployee,
     };
 
     try {
+      // Send a POST request to add the employee
       const res = await fetch("/api/employee", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -59,8 +70,10 @@ export default function ManageEmployee() {
 
       if (!res.ok) throw new Error("Failed to add employee");
 
+      // Update the state with the new employee
       setEmployees([...employees, employeeData]);
       setShowModal(false);
+      // Reset the new employee form
       setNewEmployee({
         firstname: "",
         lastname: "",
@@ -72,6 +85,7 @@ export default function ManageEmployee() {
     }
   }
 
+  // Handle input changes for the new employee form
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
     setNewEmployee((prev) => ({
@@ -80,12 +94,13 @@ export default function ManageEmployee() {
     }));
   }
 
+  // Remove or toggle the active status of an employee
   async function removeEmployee(
     employeeid: number,
     isactive: boolean,
     e: React.MouseEvent
   ) {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent triggering parent click events
     try {
       const response = await fetch(`/api/employee`, {
         method: "DELETE",
@@ -93,16 +108,18 @@ export default function ManageEmployee() {
         body: JSON.stringify({ employeeid, isactive }),
       });
       if (!response.ok) throw new Error("Failed to remove employee");
-      fetchEmployees();
+      fetchEmployees(); // Refresh the employee list
     } catch (error) {
       console.error("Error removing employee:", error);
     }
   }
 
+  // Handle clicking on an employee to view details
   function handleEmployeeClick(employee: Employee) {
     setSelectedEmployee(employee);
   }
 
+  // Close the employee details modal
   function closeEmployeeModal() {
     setSelectedEmployee(null);
   }
@@ -114,18 +131,21 @@ export default function ManageEmployee() {
       </h1>
 
       <div className="max-w-2xl mx-auto">
+        {/* Button to open the "Add Employee" modal */}
         <button
           onClick={() => setShowModal(true)}
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
         >
           Add Employee
         </button>
+        {/* Button to navigate back to the home page */}
         <button
           onClick={() => (window.location.href = "/managerHome")}
           className="mb-4 ml-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow opacity-90 transition hover:bg-green-700 hover:opacity-100 hover:scale-105 duration-200"
         >
           Home
         </button>
+        {/* List of employees */}
         <ul className="space-y-5">
           {employees.map((employee) => (
             <li
@@ -141,6 +161,7 @@ export default function ManageEmployee() {
                   {employee.ismanager ? "Manager" : "Staff"}
                 </p>
               </div>
+              {/* Button to toggle employee active status */}
               <button
                 onClick={(e) =>
                   removeEmployee(employee.employeeid, employee.isactive, e)
@@ -158,6 +179,7 @@ export default function ManageEmployee() {
         </ul>
       </div>
 
+      {/* Modal for adding a new employee */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
@@ -190,12 +212,14 @@ export default function ManageEmployee() {
               <span>Manager?</span>
             </label>
             <div className="flex justify-end">
+              {/* Cancel button to close the modal */}
               <button
                 onClick={() => setShowModal(false)}
                 className="mr-2 px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition duration-200"
               >
                 Cancel
               </button>
+              {/* Add button to submit the new employee */}
               <button
                 onClick={addEmployee}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:scale-105 duration-200"
@@ -207,6 +231,7 @@ export default function ManageEmployee() {
         </div>
       )}
 
+      {/* Modal for displaying employee details */}
       {selectedEmployee && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
@@ -228,6 +253,7 @@ export default function ManageEmployee() {
               <strong>Status:</strong>{" "}
               {selectedEmployee.isactive ? "Active" : "Inactive"}
             </p>
+            {/* Close button for the details modal */}
             <button
               onClick={closeEmployeeModal}
               className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition hover:scale-105 duration-200"

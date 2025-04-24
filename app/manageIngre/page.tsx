@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 export default function ManageIngredient() {
+  // Define the structure of an Ingredient object
   interface Ingredient {
     ingredientid: number;
     name: string;
@@ -10,20 +11,26 @@ export default function ManageIngredient() {
     maxnum: number;
   }
 
+  // State to store the list of ingredients
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  // State to control the visibility of the "Add Ingredient" modal
   const [showModal, setShowModal] = useState(false);
+  // State to store the currently selected ingredient for details view
   const [selectedIngredient, setSelectedIngredient] =
     useState<Ingredient | null>(null);
+  // State to store the new ingredient being added
   const [newIngredient, setNewIngredient] = useState({
     name: "",
     numinstock: 0,
     maxnum: 0,
   });
 
+  // Fetch ingredients when the component is mounted
   useEffect(() => {
     fetchIngredients();
   }, []);
 
+  // Fetch the list of ingredients from the API
   async function fetchIngredients() {
     try {
       const response = await fetch("/api/ingredient");
@@ -35,6 +42,7 @@ export default function ManageIngredient() {
     }
   }
 
+  // Add a new ingredient to the list
   async function addIngredient() {
     if (!newIngredient.name) {
       alert("Please fill in all fields.");
@@ -42,7 +50,7 @@ export default function ManageIngredient() {
     }
 
     const ingredientData: Ingredient = {
-      ingredientid: ingredients.length + 1,
+      ingredientid: ingredients.length + 1, // Generate a new ID
       ...newIngredient,
     };
 
@@ -55,6 +63,7 @@ export default function ManageIngredient() {
 
       if (!response.ok) throw new Error("Failed to add ingredient");
 
+      // Update the state with the new ingredient
       setIngredients([...ingredients, ingredientData]);
       setShowModal(false);
       setNewIngredient({ name: "", numinstock: 0, maxnum: 0 });
@@ -63,16 +72,18 @@ export default function ManageIngredient() {
     }
   }
 
+  // Handle input changes for the "Add Ingredient" form
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setNewIngredient((prev) => ({
       ...prev,
-      [name]: name === "name" ? value : Number(value),
+      [name]: name === "name" ? value : Number(value), // Convert numeric fields to numbers
     }));
   }
 
+  // Remove an ingredient from the list
   async function removeIngredient(ingredientid: number, e: React.MouseEvent) {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent triggering parent click events
     try {
       const response = await fetch(`/api/ingredient`, {
         method: "DELETE",
@@ -80,6 +91,8 @@ export default function ManageIngredient() {
         body: JSON.stringify({ ingredientid }),
       });
       if (!response.ok) throw new Error("Failed to remove ingredient");
+
+      // Update the state to exclude the removed ingredient
       setIngredients(
         ingredients.filter((i) => i.ingredientid !== ingredientid)
       );
@@ -88,10 +101,12 @@ export default function ManageIngredient() {
     }
   }
 
+  // Handle clicking on an ingredient to view its details
   function handleIngredientClick(ingredient: Ingredient) {
     setSelectedIngredient(ingredient);
   }
 
+  // Close the ingredient details modal
   function closeIngredientModal() {
     setSelectedIngredient(null);
   }
@@ -103,6 +118,7 @@ export default function ManageIngredient() {
       </h1>
 
       <div className="max-w-2xl mx-auto">
+        {/* Button to open the "Add Ingredient" modal */}
         <button
           onClick={() => setShowModal(true)}
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow opacity-90 transition hover:bg-blue-700 hover:opacity-100 hover:scale-105 duration-200"
@@ -110,6 +126,7 @@ export default function ManageIngredient() {
           Add Ingredient
         </button>
 
+        {/* Button to navigate back to the home page */}
         <button
           onClick={() => (window.location.href = "/managerHome")}
           className="mb-4 ml-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow opacity-90 transition hover:bg-green-700 hover:opacity-100 hover:scale-105 duration-200"
@@ -117,6 +134,7 @@ export default function ManageIngredient() {
           Home
         </button>
 
+        {/* List of ingredients */}
         <ul className="space-y-5">
           {ingredients.map((ingredient) => (
             <li
@@ -132,6 +150,7 @@ export default function ManageIngredient() {
                   Stock: {ingredient.numinstock} / {ingredient.maxnum}
                 </p>
               </div>
+              {/* Button to remove the ingredient */}
               <button
                 onClick={(e) => removeIngredient(ingredient.ingredientid, e)}
                 className="px-3 py-1 bg-red-500 text-white rounded-lg shadow opacity-90 hover:bg-red-600 hover:opacity-100 transition hover:scale-105 duration-200"
@@ -143,6 +162,7 @@ export default function ManageIngredient() {
         </ul>
       </div>
 
+      {/* Modal for adding a new ingredient */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
@@ -182,12 +202,14 @@ export default function ManageIngredient() {
               />
             </div>
             <div className="flex justify-end">
+              {/* Button to cancel adding a new ingredient */}
               <button
                 onClick={() => setShowModal(false)}
                 className="mr-2 px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition duration-200"
               >
                 Cancel
               </button>
+              {/* Button to confirm adding a new ingredient */}
               <button
                 onClick={addIngredient}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:scale-105 duration-200"
@@ -199,6 +221,7 @@ export default function ManageIngredient() {
         </div>
       )}
 
+      {/* Modal for viewing ingredient details */}
       {selectedIngredient && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950 bg-opacity-70">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 animate-fade-in">
@@ -215,6 +238,7 @@ export default function ManageIngredient() {
               <strong>Stock:</strong> {selectedIngredient.numinstock} /{" "}
               {selectedIngredient.maxnum}
             </p>
+            {/* Button to close the ingredient details modal */}
             <button
               onClick={closeIngredientModal}
               className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition hover:scale-105 duration-200"
