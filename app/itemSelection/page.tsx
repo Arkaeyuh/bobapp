@@ -4,6 +4,8 @@ import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useCart } from "@/components/cartContext";
+import { translatePage } from "@/components/googleTranslateFunction";
 
 type Item = {
   itemid: number;
@@ -19,6 +21,14 @@ function ItemSelectionContent() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  const {language}  = useCart()
+
+  // Translate the page into the user's currently selected language after done loading.
+  useEffect(()=>{
+    if(!loading)
+      translatePage(language)
+  },[loading])
 
   useEffect(() => {
     if (!category) return;

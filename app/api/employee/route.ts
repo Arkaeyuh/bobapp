@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const pool = await getPool();
     const result = await pool.query(
-      "SELECT * FROM employee where employeeid != 0"
+      "SELECT * FROM employee where employeeid != 0 and employeeid!=9"
     );
 
     return NextResponse.json({ success: true, employees: result.rows });

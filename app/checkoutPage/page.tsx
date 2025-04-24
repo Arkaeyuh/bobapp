@@ -1,22 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCart, Item, Ingredient} from '@/components/cartContext'
-import MailRu from "next-auth/providers/mailru";
+import { useCart} from '@/components/cartContext'
+import { translatePage } from "@/components/googleTranslateFunction";
 
 export default function checkoutPage() {
-  const {cart, addToCart, removeFromCart}  = useCart()
+  const {language}  = useCart()
 
   // Structure of an item in the cart
   // { id: number; name: string; price: number; quantity: number; ingredients: Ingredient[]; }
 
-  interface Ingredient {
-    ingredientid: number;
-    name: string;
-  }
-  
+  // Translate the page into the user's currently selected language on mount.
+  useEffect(()=>{
+      translatePage(language)
+    },[])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -29,7 +28,7 @@ export default function checkoutPage() {
       />
       <h1 className="text-4xl font-bold mb-4 text-black">Ole Sarge approves of your order. You're a good Ag!</h1>
       <Link href="/home" className="bg-red-900 text-white text-2xl py-2 px-4 rounded-lg hover:bg-red-800">
-        Return to Home
+        <p>Return to Home</p>
       </Link>
     </div>
   );

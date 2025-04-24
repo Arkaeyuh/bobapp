@@ -1,11 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { translatePage } from "@/components/googleTranslateFunction";
+import { useCart} from '@/components/cartContext'
 
 export default function HomePage() {
+  const {language}  = useCart()
+  
+  // Translate the page into the user's currently selected language on mount.
+  useEffect(()=>{
+      translatePage(language)
+    },[])
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       {/* Header */}

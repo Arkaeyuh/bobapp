@@ -1,10 +1,11 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-
-
+import { useCart} from '@/components/cartContext'
+import { translatePage } from "@/components/googleTranslateFunction";
+import Link from "next/link";
 
 export default function Signup() {
     const router = useRouter();
@@ -12,6 +13,7 @@ export default function Signup() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const {language}  = useCart()
 
     async function handleSubmit(e: FormEvent) {
       e.preventDefault();
@@ -44,7 +46,10 @@ export default function Signup() {
       }
     }
 
-      
+    // Translate the page into the user's currently selected language on mount.
+    useEffect(() => {
+      translatePage(language)
+    }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -87,12 +92,12 @@ export default function Signup() {
             Sign Up
           </button>
         </form>
-        <p className="text-center mt-4 text-black">
-          Already have an account?{' '}
-          <a href="/login" className="text-blue-500 hover:underline">
-            Login here
-          </a>
-        </p>
+        <div className="flex justify-center text-center mt-4 text-black">
+          <p className="mr-0.5">Already have an account?</p>
+          <Link href={{pathname:"/login"}} className="text-blue-500 hover:underline ml=0.5">
+            <p>Login here</p>
+          </Link>
+        </div>
       </div>
     </div>
   );

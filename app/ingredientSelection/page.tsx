@@ -5,18 +5,21 @@ import { useCart, Item, Ingredient} from '@/components/cartContext'
 import {IngredientToggleButton} from '@/components/ingredientToggleButton'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { translatePage } from '@/components/googleTranslateFunction'
 
 function IngredientSelectionContent()
 {
     const searchParams = useSearchParams()
     const itemID = searchParams.get("itemid")
-    const {cart, addToCart}  = useCart();
+    const {addToCart, language}  = useCart();
 
     if(!itemID)
-      return null;
+      return;
 
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [defaultIngredientIds, setDefaultIngredientIds] = useState<Set<number>>(new Set());
+    const [loading, setLoading] = useState(true);
+
     // const [ingredientToggleButtons, setingredientToggleButtons] = useState<React.JSX.Element[]>([]);
     const tempItem = {
       itemid:-1,
@@ -29,11 +32,17 @@ function IngredientSelectionContent()
     }
     const [currentItem, setCurrentItem] = useState<Item>(tempItem);
 
+    // Translate the page into the user's currently selected language after done loading.
+    useEffect(()=>{
+      if(!loading)
+        translatePage(language)
+    },[loading])
+
     useEffect(() => {
         fetchIngredients();
-      }, []); //TODO -> might need to change to run more than on mount?
+      }, []);
 
-      // Update the ingredient toggle buttons once, ingredients is fully done updating
+      // Update the ingredient toggle buttons once ingredients is fully done updating
       // useEffect(() => {
       //   setingredientToggleButtons((iTB)=>ingredients.map((ingred, index) => (
       //     <IngredientToggleButton key={index} uniqueID={index} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
@@ -83,6 +92,8 @@ function IngredientSelectionContent()
 
       } catch (error) {
         console.error("Error fetching ingredients:", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -122,9 +133,9 @@ function IngredientSelectionContent()
               <Image  className="w-72" src="/Pearl+Milk+Tea.jpg" width = {100} height = {100} alt="Image of Item Just Selected"/>
               <div className="ml-2">
                 <h2 className="text-2xl font-semibold text-black underline">{(currentItem) ? currentItem.name : "Item name not found"}</h2>
-                <p className="text-md text-black">{(currentItem) ? currentItem.name : "This item"} is classic, fresh, and delicious. It is prepared daily on-site using only the finest ingredients.</p>
+                <p className="text-md text-black">{(loading) ? "This item" : currentItem.name} is classic, fresh, and delicious. It is prepared daily on-site using only the finest ingredients.</p>
               </div>
-            </div>
+            </div>  
             <div className="grow w-2/5 border-l-2 border-gray-400 content-center pt-4 pb-3 px-15">
               <h2 className="text-2xl font-semibold text-black justify-self-center underline">Quantity</h2>
               <div className="grid grid-cols-10 justify-items-center">
