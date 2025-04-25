@@ -1,9 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {translatePage} from '@/components/googleTranslateFunction'
+import { useCart} from '@/components/cartContext'
+import LanguagePicker from "@/components/languagePicker";
 
 export default function KioskLandingPage() {
+  const {language, changeLanguage}  = useCart()
+  const [prevLanguage, changePrevLanguage] = useState<string>(language)
+
+  // Whenever enter the landing page, set the language back to its default of english
+  useEffect(()=>{
+    changeLanguage("en")
+  },[])
+
+  // When the language changes, retranslate the page
+  useEffect(()=>{
+    console.log("language changed to "+language+" from "+prevLanguage)
+    if(prevLanguage!=language && language=='en')
+      translatePage(language, prevLanguage, true)
+    else
+      translatePage(language, prevLanguage)
+    changePrevLanguage(language)
+  },[language])
 
   const handlePageClick = () => {
     // Direct the guest user to the main/home page.
@@ -40,6 +60,9 @@ export default function KioskLandingPage() {
         </h1>
         <p className="text-lg text-black">Click anywhere to get started</p>
       </div>
+      
+      {/* Language Selector */}
+      <LanguagePicker/>
     </div>
   );
 }

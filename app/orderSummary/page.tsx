@@ -1,13 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
-import { useCart, Item, Ingredient} from '@/components/cartContext'
+import { useCart} from '@/components/cartContext'
 import { useRouter } from 'next/navigation';
+import { translatePage } from "@/components/googleTranslateFunction";
 
 export default function OrderSummary() {
-  const {cart, removeFromCart, clearCart}  = useCart()
+  const {cart, removeFromCart, clearCart, language}  = useCart()
   const router = useRouter();
+
+  // Translate the page into the user's currently selected language on mount
+  useEffect(()=>{
+    translatePage(language)
+  },[])
 
   // Structure of an item in the cart
   // { id: number; name: string; price: number; quantity: number; ingredients: Ingredient[]; }
@@ -73,17 +79,17 @@ export default function OrderSummary() {
         {/* Scroll Indicator (only shows if there are > 5 items) */}
         {cart.length > 5 && (
           <div className="bg-gray-700 text-white text-center py-2 text-sm">
-            Scroll to see more ▼
+            <p>Scroll to see more ▼</p>
           </div>
         )}
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-between w-full h-50 mt-4 items-center mt-auto">
+      <div className="flex justify-between w-full h-50 items-center mt-auto">
         <Link 
           href="/home" 
           className="flex bg-red-700 text-white text-3xl text-center items-center w-1/6 h-1/2 py-2 px-4 rounded-lg hover:bg-red-800">
-            Back to Selection
+            <p>Back to Selection</p>
         </Link>
         <button 
           onClick={handleCheckout} 
