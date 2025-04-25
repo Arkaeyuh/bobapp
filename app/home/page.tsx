@@ -22,7 +22,7 @@ export default function HomePage() {
 
         {/* Center column  */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Welcome to ShareTea</h1>
+          <h1 className="text-4xl font-bold">Welcome to TeaShare</h1>
           <p className="mt-2 text-lg">Your favorite bubble tea destination!</p>
         </div>
 

@@ -1,20 +1,47 @@
 // app/api/updateInventory/route.ts
 
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
 import { getPool } from "@/lib/db";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth"; 
+import { authOptions } from "@/lib/auth";
+import { Item } from "@/components/cartContext";
 
 export async function POST(request: Request) {
   try {
-    // Parse the JSON request body
-    const ingredients: { ingredientID: number; quantityUsed: number }[] = await request.json();
-    // Current session so we can get data about the user
+    // The cart gets sent over the POST request
+    const cart: Item[] = await request.json();
 
-    const session = await getServerSession(authOptions);
+    // What we need to do is gather the cart and turn it into usable data.
+    const ingredientUsage: Record<number, number> = {}; // { ingredientID: totalUsed }
 
+    let orderCost: number = 0;
     let totalIngredientsUsed = 0;
+
+    // Go through cart and get total cost, along with ingredient count information
+    cart.forEach(item => {
+      item.ingredients.forEach(ingredient => {
+        const usedInCurrItem = item.quantity; // 1 per item by default, adjust if needed
+        if (ingredientUsage[ingredient.ingredientid]) {
+          ingredientUsage[ingredient.ingredientid] += usedInCurrItem;
+        } else {
+          ingredientUsage[ingredient.ingredientid] = usedInCurrItem;
+        }
+        totalIngredientsUsed += usedInCurrItem; // Accumulate total ingredients used
+      });
+      // Calculate the total cost of all items
+      orderCost += parseFloat(item.price) * item.quantity;
+    });
+  
+    // Convert to array format for the backend
+    const ingredients = Object.entries(ingredientUsage).map(
+      ([ingredientID, quantityUsed]) => ({
+        ingredientID: Number(ingredientID),
+        quantityUsed,
+      })
+    );
+
+    // Current session so we can get data about the user
+    const session = await getServerSession(authOptions);
 
     if (!Array.isArray(ingredients)) {
       return NextResponse.json({ error: 'Invalid data format' }, { status: 400 });
@@ -25,71 +52,79 @@ export async function POST(request: Request) {
 
     try {
       // Start a transaction
+      // Use BEGIN so that if anything fails, we can roll back all the successful updates
       await pool.query('BEGIN');
 
-      // Loop through each ingredient in the array and update numInStock
-      for (const { quantityUsed } of ingredients) {
-        totalIngredientsUsed += quantityUsed;
-      }
+      /* 
+       * In order to update the transaction database, we need the:
+       * 1) transaction ID
+       * 2) total order cost
+       * 3) time
+       * 4) employee ID
+       * 5) total ingredients used
+      */
 
+      // 1) Gather the transaction ID
       const transactionQuery = await pool.query("SELECT COUNT(transactionID) FROM transaction");
       const transactionID = Number(transactionQuery.rows[0].count) + 1;
       console.log("Transaction ID: ", transactionID);
       console.log(transactionQuery.rows);
 
-      // Getting current time
+      // 3) Get the time
       const currentTime = new Date()
-        const options: Intl.DateTimeFormatOptions = {
-          hour12:false,
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }
-        let currentTimeString = currentTime.toLocaleString("en-US", options)
-        currentTimeString = currentTimeString.replaceAll("/","-")
-        currentTimeString = currentTimeString.replaceAll(",","")
-        currentTimeString = currentTime.getFullYear()+"-"+currentTimeString
+      const options: Intl.DateTimeFormatOptions = {
+        hour12:false,
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+      let currentTimeString = currentTime.toLocaleString("en-US", options)
+      currentTimeString = currentTimeString.replaceAll("/", "-")
+      currentTimeString = currentTimeString.replaceAll(",", "")
+      currentTimeString = currentTime.getFullYear() + "-" + currentTimeString
 
-        //Seems like what's going on here is setting a fixed price of 7 for the transaction, with employeeid 2?
-      // await pool.query(
-      //   `INSERT INTO transaction VALUES ($1, $2, $3, $4, $5)`,
-      //   [transactionID, 7, currentTimeString, 2, totalIngredientsUsed]
-      // );
-        
-
-      // What we need to do:
+      // 4) Get the Employee ID
       // Get the user role from the session, and use that to get the employeeID from the employee table.
       // Lets use employee id 0 for transactions associated with customers, and the regular employee id for those with employees
+      let employeeID: Number;
 
+      if (session?.user.role === "employee"){
+        employeeID = session?.user.employeeid;
+      } else{
+        employeeID = 0;
+      }
 
-        let employeeID: Number;
+      // Debugging: Log variables passed into the transaction query
+      console.log("Transaction ID:", transactionID);
+      console.log("Total Amount:", 7); // Fixed price for now
+      console.log("Transaction Time:", currentTimeString);
+      console.log("Employee ID:", employeeID);
+      console.log("Total Ingredients Used:", totalIngredientsUsed);
 
-        if (session?.user.role === "employee"){
-          employeeID = session?.user.employeeid;
-        } else{
-          employeeID = 0;
-        }
+      // Insert the transaction to the database
+      await pool.query(
+        `INSERT INTO transaction (transactionID, totalAmount, transactionTime, employeeID, numIngredientsUsed) VALUES ($1, $2, $3, $4, $5)`,
+        [transactionID, orderCost, currentTimeString, employeeID, totalIngredientsUsed]
+      );
 
-        // Debugging: Log variables passed into the transaction query
-        console.log("Transaction ID:", transactionID);
-        console.log("Total Amount:", 7); // Fixed price for now
-        console.log("Transaction Time:", currentTimeString);
-        console.log("Employee ID:", employeeID);
-        console.log("Total Ingredients Used:", totalIngredientsUsed);
-
-        await pool.query(
-          `INSERT INTO transaction (transactionID, totalAmount, transactionTime, employeeID, numIngredientsUsed) VALUES ($1, $2, $3, $4, $5)`,
-          [transactionID, 7, currentTimeString, employeeID, totalIngredientsUsed]
-        );
-
+      // Update the stock
       for (const { ingredientID, quantityUsed } of ingredients) {
         await pool.query(
           `UPDATE ingredient 
            SET numInStock = numInStock - $1 
            WHERE ingredientID = $2`,
           [quantityUsed, ingredientID]
+        );
+      }
+
+      // Update transactionItem table
+      for (const item of cart) {
+        await pool.query(
+          `INSERT INTO transactionitem (transactionID, itemID, quantity)
+           VALUES ($1, $2, $3)`,
+          [transactionID, item.itemid, item.quantity]
         );
       }
 

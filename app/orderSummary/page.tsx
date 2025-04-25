@@ -13,41 +13,20 @@ export default function OrderSummary() {
   // { id: number; name: string; price: number; quantity: number; ingredients: Ingredient[]; }
   
   const handleCheckout = async () => {
-    // Aggregate total quantity of each ingredient used
-    const ingredientUsage: Record<number, number> = {}; // { ingredientID: totalUsed }
-  
-    cart.forEach(item => {
-      item.ingredients.forEach(ingredient => {
-        const usedInCurrItem = item.quantity; // 1 per item by default, adjust if needed
-        if (ingredientUsage[ingredient.ingredientid]) {
-          ingredientUsage[ingredient.ingredientid] += usedInCurrItem;
-        } else {
-          ingredientUsage[ingredient.ingredientid] = usedInCurrItem;
-        }
-      });
-    });
-  
-    // Convert to array format for the backend
-    const ingredientsToUpdate = Object.entries(ingredientUsage).map(
-      ([ingredientID, quantityUsed]) => ({
-        ingredientID: Number(ingredientID),
-        quantityUsed,
-      })
-    );
+    // Do nothing if cart is empty
+    if (cart.length ===0 ) return;
 
-    // ingredientsToUpdate.unshift({ ingredientID: 999, quantityUsed: 999 }); // Add dummy entry for ingredientID 1
-  
-    // Send to backend
+    // Send cart to backend
     try {
       const result = await fetch("/api/updateInventory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ingredientsToUpdate),
+        body: JSON.stringify(cart),
       });
   
       if (result.ok) {
         alert("Ingredients updated!");
-        // optionally clear cart or redirect
+        // Optionally clear cart or redirect
       } else {
         alert("Error updating stock.");
       }
@@ -75,7 +54,6 @@ export default function OrderSummary() {
               {/* Item Details */}
               <div className="flex flex-col">
                 <span className="font-semibold text-gray-800">{item.name}</span>
-                <span className="text-gray-500 text-sm">Description...</span>
               </div>
 
               {/* Quantity */}
@@ -92,7 +70,7 @@ export default function OrderSummary() {
           ))}
         </div>
 
-        {/* Scroll Indicator (only shows if there are > 3 items) */}
+        {/* Scroll Indicator (only shows if there are > 5 items) */}
         {cart.length > 5 && (
           <div className="bg-gray-700 text-white text-center py-2 text-sm">
             Scroll to see more ▼
