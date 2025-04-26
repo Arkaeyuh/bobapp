@@ -18,6 +18,8 @@ function ItemSelectionContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
 
+  // State to hold items, loading state, and error message
+
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -36,12 +38,35 @@ function ItemSelectionContent() {
     async function fetchItems() {
       try {
         const res = await fetch(
+          // Fetching items from the backend
+          // The backend will return all items in the category specified by the URL parameter
           `/api/items?category=${encodeURIComponent(category || "")}`
         );
         const data = await res.json();
 
         if (res.ok) {
           setItems(data);
+
+          // Checking for dynamic menu pricing
+          const itemPriceChange = getItemPriceChange()
+          // Changing all item's price if there is a dynamic menu change
+          if(itemPriceChange!=0)
+          {
+            setItems((old)=>{
+              let answer:Item[] = []
+              const minPrice:number = 0.50
+              
+              for(let i=0; i<old.length; i++)
+              {
+                const oldPrice = old[i].price
+                // If ever want a percent increase/decrease instead of just +/- a constant, can change to multiply in below statement.
+                const temp:Item = {...old[i], price:(Math.max(Number(oldPrice)+itemPriceChange,minPrice))}
+                answer.push(temp)
+              }
+              return answer
+            })
+          }
+          
         } else {
           setError(data.error || "Something went wrong");
         }
@@ -54,6 +79,24 @@ function ItemSelectionContent() {
 
     fetchItems();
   }, [category]);
+
+  function getItemPriceChange() {
+    let totalChange = 0
+    const currentTime = new Date()
+    // Happy Hour (5pm-9pm), -1
+    if(currentTime.getHours() >= 17 && currentTime.getHours()<=21)
+      totalChange-=1;
+    // Not that busy right after open 10am-12pm, -1
+    if(currentTime.getHours() >= 10 && currentTime.getHours()<=12)
+      totalChange-=1;
+    // Late customers are desperate 12am-4am, +1
+    if(currentTime.getHours() >=0  && currentTime.getHours()<=4)
+      totalChange+=1;
+    // Fri/Sat/Sun are busy, +1
+    if(currentTime.getDay() >= 5 || currentTime.getDay()==0)
+      totalChange+=1;
+    return totalChange
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -108,7 +151,7 @@ function ItemSelectionContent() {
               <Link
                 href={{
                   pathname: "/ingredientSelection",
-                  query: { itemid: item.itemid },
+                  query: { itemid: item.itemid, itemprice: item.price},
                 }}
               >
                 <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">

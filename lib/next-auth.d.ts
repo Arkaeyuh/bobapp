@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 
+// Define the types for the user object returned by NextAuth
+// We need this to be able to use the user object in the session
 declare module "next-auth" {
     interface User {
         id: string;

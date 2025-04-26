@@ -101,7 +101,7 @@ export default function Login() {
             <p>Sign in with Google</p>
           </button>
         </div>
-
+        {/* Signup Link */}
         <div className="flex justify-center text-center mt-4 text-black">
           <p className="mr-0.5">New user?</p>
           <Link href={{pathname:"/signup"}} className="text-blue-500 hover:underline ml-0.5">
