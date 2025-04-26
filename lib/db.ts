@@ -3,6 +3,9 @@ import { Pool } from 'pg';
 
 let cachedPool: Pool;
 
+// Function to get a cached PostgreSQL connection pool
+// This function creates a new pool if one doesn't already exist, or returns the existing one.
+
 export function getPool() {
   if (!cachedPool) {
     cachedPool = new Pool({

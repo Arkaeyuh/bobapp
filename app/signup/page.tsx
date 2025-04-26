@@ -19,10 +19,14 @@ export default function Signup() {
       e.preventDefault();
       setError("");
     
+      // Check passwords match
+
       if (password !== confirmPassword) {
         setError("Passwords do not match");
         return;
       }
+
+      //Access the backend to sign up the user
     
       try {
         const response = await fetch("/api/signup", {
@@ -92,6 +96,7 @@ export default function Signup() {
             Sign Up
           </button>
         </form>
+        {/* Link to login page */}
         <div className="flex justify-center text-center mt-4 text-black">
           <p className="mr-0.5">Already have an account?</p>
           <Link href={{pathname:"/login"}} className="text-blue-500 hover:underline ml=0.5">

@@ -18,6 +18,8 @@ function ItemSelectionContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
 
+  // State to hold items, loading state, and error message
+
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -36,6 +38,8 @@ function ItemSelectionContent() {
     async function fetchItems() {
       try {
         const res = await fetch(
+          // Fetching items from the backend
+          // The backend will return all items in the category specified by the URL parameter
           `/api/items?category=${encodeURIComponent(category || "")}`
         );
         const data = await res.json();
