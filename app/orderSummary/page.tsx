@@ -2,8 +2,8 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { useCart} from '@/components/cartContext'
-import { useRouter } from 'next/navigation';
+import { useCart} from "@/components/cartContext";
+import { useRouter } from "next/navigation";
 import { translatePage } from "@/components/googleTranslateFunction";
 
 export default function OrderSummary() {
