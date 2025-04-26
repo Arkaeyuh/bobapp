@@ -11,6 +11,7 @@ function IngredientSelectionContent()
 {
     const searchParams = useSearchParams()
     const itemID = searchParams.get("itemid")
+    const itemPrice = searchParams.get("itemprice")
     const {addToCart, language}  = useCart();
 
     if(!itemID)
@@ -20,7 +21,6 @@ function IngredientSelectionContent()
     const [defaultIngredientIds, setDefaultIngredientIds] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
 
-    // const [ingredientToggleButtons, setingredientToggleButtons] = useState<React.JSX.Element[]>([]);
     const tempItem = {
       itemid:-1,
       name:"Loading Item Name",
@@ -41,13 +41,6 @@ function IngredientSelectionContent()
     useEffect(() => {
         fetchIngredients();
       }, []);
-
-      // Update the ingredient toggle buttons once ingredients is fully done updating
-      // useEffect(() => {
-      //   setingredientToggleButtons((iTB)=>ingredients.map((ingred, index) => (
-      //     <IngredientToggleButton key={index} uniqueID={index} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
-      //     )))
-      // }, [ingredients]);
     
     async function fetchIngredients() {
       try {
@@ -62,7 +55,7 @@ function IngredientSelectionContent()
           itemid: data.currentItem[0].itemid,
           name:data.currentItem[0].name,
           quantity:1,
-          price:data.currentItem[0].price,
+          price:itemPrice || data.currentItem[0].price,
           category: data.currentItem[0].category,
           ingredients:[]
         }
@@ -86,10 +79,6 @@ function IngredientSelectionContent()
         setIngredients((i) => defaultIngredients.toSorted(function (a,b){return a.name.localeCompare(b.name)}).concat(...i))
         setDefaultIngredientIds((s)=>defaultIngredientIdsTemp)
         
-        // setingredientToggleButtons((iTB)=>ingredients.map((ingred, index) => (
-        //   <IngredientToggleButton key={index} uniqueID={index} ingredient={ingred} selected={defaultIngredientIds.has(ingred.ingredientid)}></IngredientToggleButton>
-        //   )))
-
       } catch (error) {
         console.error("Error fetching ingredients:", error);
       } finally {
@@ -191,7 +180,6 @@ function IngredientSelectionContent()
             <Link href={{ pathname: "/itemSelection", query: { category: currentItem.category } }}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2">Cancel</button>
             </Link>
-            {/* <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> {console.log(cart); addSelectedItemToCart();}}>Display cart to console, then add to cart</button> */}
             <Link href={{pathname:"/home"}}>
               <button className="text-lg text-white bg-blue-500 rounded hover:bg-blue-600 px-4 py-2" onClick={()=> addSelectedItemToCart()}>Confirm</button>
             </Link>
