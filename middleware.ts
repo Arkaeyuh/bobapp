@@ -15,6 +15,7 @@ export async function middleware(req: NextRequest) {
 
   // Check if the user is a manager for manager pages
   if (token && (req.nextUrl.pathname.startsWith("/manage") || req.nextUrl.pathname.startsWith("/weather") || req.nextUrl.pathname.startsWith("/analysis")) && !token.ismanager) {
+    console.log("Token:", token); // Debugging line
     // Redirect non-managers to the home page
     return NextResponse.redirect(new URL("/home", req.url));
   }
