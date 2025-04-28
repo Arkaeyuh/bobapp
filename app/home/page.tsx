@@ -6,9 +6,11 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { translatePage } from "@/components/googleTranslateFunction";
 import { useCart} from '@/components/cartContext'
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
   const {language}  = useCart()
+  const { data: session } = useSession() 
   
   // Translate the page into the user's currently selected language on mount.
   useEffect(()=>{
@@ -62,6 +64,19 @@ export default function HomePage() {
               <p className="text-red-700 hover:underline">Go to Checkout</p>
             </Link>
           </div> */}
+
+          {/* Manager-only Button */}
+          {session?.user?.ismanager && (
+            <div className="mb-6">
+              <Link href="/managerHome">
+                <button className="p-3 bg-blue-500 text-white text-xl rounded-lg hover:bg-blue-600 transition">
+                  Manager Dashboard
+                </button>
+              </Link>
+            </div>
+          )}
+
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Milk Tea */}
             <Link href={{ pathname: "/itemSelection", query: { category: "Tea" } }}>
