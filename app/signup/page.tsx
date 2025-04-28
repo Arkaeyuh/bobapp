@@ -56,54 +56,59 @@ export default function Signup() {
     }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6 text-black">Sign Up</h1>
-        <form 
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          />
-          <button
-            type="submit"
-            className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-          >
-            Sign Up
-          </button>
-        </form>
-        {/* Link to login page */}
-        <div className="flex justify-center text-center mt-4 text-black">
-          <p className="mr-0.5">Already have an account?</p>
-          <Link href={{pathname:"/login"}} className="text-blue-500 hover:underline ml=0.5">
-            <p>Login here</p>
-          </Link>
+    <>
+      <title>TeaShare - Sign Up Page</title>
+      <div className="flex items-center justify-center min-h-screen bg-gray-300">
+        <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-md">
+
+          <h1 className="text-3xl font-bold text-center mb-6 text-black">Sign Up</h1>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <label htmlFor="email" className="text-xl text-gray-700">Email</label>
+            <input
+              type="email"
+              placeholder="Email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-xl"
+            />
+              <label htmlFor="password" className="text-xl text-gray-700 m-0">Password</label>
+              <input
+              type="password"
+              placeholder="Password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-xl"
+              />
+              <label htmlFor="confirmPassword" className="text-xl text-gray-700 m-0">Confirm Password</label>
+              <input
+              type="password"
+              placeholder="Confirm Password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-xl"
+              />
+              <button
+              type="submit"
+              className="p-3 bg-blue-700 text-white text-xl rounded-lg hover:bg-blue-900 transition"
+              >
+              Sign Up
+              </button>
+          </form>
+          {/* Link to login page */}
+          <div className="flex justify-center text-center text-lg mt-4 text-black">
+            <p className="mr-0.5"><b>Already have an account?</b></p>
+            <Link href={{pathname:"/login"}} className="text-blue-700 hover:underline ml=0.5">
+              <p><b>Login here</b></p>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

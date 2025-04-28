@@ -20,15 +20,15 @@ export default function HomePage() {
       <title>TeaShare - Item Category Selection</title>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         {/* Header */}
-        <header className="w-full bg-red-700 text-white py-6 mb-4 grid grid-cols-3 items-center px-6">
+        <header className="w-full bg-red-700 text-white py-6 mb-4 flex flex-col md:flex-row md:justify-between gap-y-4 px-6">
           {/* Left column  */}
           <div className="flex justify-start">
             {/*//TODO: Make this an icon*/} 
             <Link 
               href="/orderSummary" 
-              className="bg-gray-200 text-2xl text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md"
+              className="flex items-center bg-gray-200 text-2xl text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md"
             >
-              Checkout
+              Go to Checkout
             </Link>
           </div>
 
@@ -42,7 +42,7 @@ export default function HomePage() {
           <div className="flex justify-end">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="bg-red-200 text-2xl text-black hover:bg-red-100 transition py-3 px-6 rounded-lg shadow-md"
+              className="flex items-center bg-red-200 text-2xl text-black hover:bg-red-300 transition py-3 px-6 rounded-lg shadow-md"
             >
               Sign Out
             </button>
@@ -111,7 +111,7 @@ export default function HomePage() {
         </main>
 
         <footer className="w-full bg-red-700 text-white py-4 mt-10">
-          <p className="text-center">© 2025 ShareTea. All rights reserved.</p>
+          <p className="text-center">© 2025 TeaShare. All rights reserved.</p>
         </footer>
       </div>
     </>

@@ -99,74 +99,77 @@ function ItemSelectionContent() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="w-full bg-blue-500 text-white py-6 mb-4 grid grid-cols-3 items-center px-6">
-        {/* Left column */}
-        <div className="flex justify-start">
-          <Link href="/home">
-            <button className="bg-gray-200 text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md">
-              Back
-            </button>
-          </Link>
-        </div>
-
-        {/* Center column */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold">Item Selection</h1>
-          <p className="mt-2 text-lg">
-            {category
-              ? `Browse our delicious ${category} options`
-              : "No category selected"}
-          </p>
-        </div>
-
-        {/* Right column */}
-        <div className="flex justify-end">
-          <button
-            onClick={() => signOut({ callbackUrl: "/" })}
-            className="bg-red-500 hover:bg-red-600 transition py-3 px-6 rounded-lg shadow-md text-lg"
-          >
-            Sign Out
-          </button>
-        </div>
-      </header>
-
-      <main className="flex flex-col items-center mt-10 px-4 w-full">
-        <h2 className="text-2xl font-semibold mb-6 text-black">
-          {category} Menu
-        </h2>
-
-        {loading && <p className="text-gray-700">Loading items...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl">
-          {items.map((item) => (
-            <div
-              key={item.itemid}
-              className="bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105"
+    <>
+      <title>TeaShare - Item Selection</title>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        {/* Header */}
+        <header className="w-full bg-red-700 text-white py-6 mb-4 flex flex-col md:flex-row md:justify-between gap-y-4 px-6">
+          {/* Left column */}
+          <div className="flex justify-start">
+            <Link 
+              href="/home"
+              className="flex items-center bg-gray-200 text-2xl text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md"
             >
-              <h3 className="text-xl font-bold text-black mb-2">{item.name}</h3>
-              <p className="text-gray-700">${Number(item.price).toFixed(2)}</p>
-              <Link
-                href={{
-                  pathname: "/ingredientSelection",
-                  query: { itemid: item.itemid, itemprice: item.price},
-                }}
-              >
-                <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  Add to Cart
-                </button>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </main>
+              Change Category
+            </Link>
+          </div>
 
-      <footer className="w-full bg-blue-500 text-white py-4 mt-10">
-        <p className="text-center">© 2025 ShareTea. All rights reserved.</p>
-      </footer>
-    </div>
+          {/* Center column */}
+          <div className="text-center">
+            <h1 className="text-4xl font-bold">Item Selection</h1>
+            <p className="mt-2 text-lg">
+              {category
+                ? `Browse our delicious ${category} options`
+                : "No category selected"}
+            </p>
+          </div>
+
+          {/* Right column */}
+          <div className="flex justify-end">
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="flex items-center bg-red-200 text-2xl text-black hover:bg-red-100 transition py-3 px-6 rounded-lg shadow-md"
+            >
+              Sign Out
+            </button>
+          </div>
+        </header>
+
+        <main className="flex flex-col items-center mt-10 px-4 w-full">
+          <h2 className="text-4xl font-semibold mb-6 text-black">
+            {category} Menu
+          </h2>
+
+          {loading && <p className="text-gray-700">Loading items...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl">
+            {items.map((item) => (
+              <div
+                key={item.itemid}
+                className="bg-white p-6 rounded-lg shadow-md text-center transform transition-transform duration-300 hover:scale-105"
+              >
+                <h3 className="text-2xl font-bold text-black mb-2">{item.name}</h3>
+                <p className="text-gray-700 text-xl font-bold mb-4">${Number(item.price).toFixed(2)}</p>
+                <Link
+                  href={{
+                    pathname: "/ingredientSelection",
+                    query: { itemid: item.itemid, itemprice: item.price},
+                  }}
+                  className="m-4 px-4 py-2 bg-red-700 text-white text-lg rounded hover:bg-red-900"
+                >
+                  Select Item for Cart
+                </Link>
+              </div>
+            ))}
+          </div>
+        </main>
+
+        <footer className="w-full bg-red-700 text-white py-4 mt-10">
+          <p className="text-center">© 2025 TeaShare. All rights reserved.</p>
+        </footer>
+      </div>
+    </>
   );
 }
 
