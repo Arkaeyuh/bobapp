@@ -100,7 +100,7 @@ function ItemSelectionContent() {
 
   return (
     <>
-      <title>TeaShare - Item Selection</title>
+      <title>TeaShare - Select Item</title>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         {/* Header */}
         <header className="w-full bg-red-700 text-white py-6 mb-4 flex flex-col md:flex-row md:justify-between gap-y-4 px-6">
@@ -110,7 +110,7 @@ function ItemSelectionContent() {
               href="/home"
               className="flex items-center bg-gray-200 text-2xl text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md"
             >
-              Change Category
+              <span>Change Category</span>
             </Link>
           </div>
 
@@ -158,7 +158,7 @@ function ItemSelectionContent() {
                   }}
                   className="m-4 px-4 py-2 bg-red-700 text-white text-lg rounded hover:bg-red-900"
                 >
-                  Select Item for Cart
+                  <span>Select Item</span>
                 </Link>
               </div>
             ))}

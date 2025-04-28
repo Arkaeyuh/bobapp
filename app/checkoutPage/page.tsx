@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { useCart} from '@/components/cartContext'
 import { translatePage } from "@/components/googleTranslateFunction";
 
@@ -27,9 +27,12 @@ export default function checkoutPage() {
         className="rounded-md mb-4 object-cover"
       />
       <h1 className="text-4xl font-bold mb-4 text-black">Ole Sarge approves of your order. You're a good Ag!</h1>
-      <Link href="/home" className="bg-red-900 text-white text-2xl py-2 px-4 rounded-lg hover:bg-red-800">
+      <button 
+        onClick={() => signOut({ callbackUrl: "/" })}
+        className="bg-red-900 text-white text-2xl py-2 px-4 rounded-lg hover:bg-red-800"
+      >
         <p>Return to Home</p>
-      </Link>
+      </button>
     </div>
   );
 }

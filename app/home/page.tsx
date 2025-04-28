@@ -28,7 +28,7 @@ export default function HomePage() {
               href="/orderSummary" 
               className="flex items-center bg-gray-200 text-2xl text-black hover:bg-gray-300 transition py-3 px-6 rounded-lg shadow-md"
             >
-              Go to Checkout
+              <p>Go to Checkout</p>
             </Link>
           </div>
 
