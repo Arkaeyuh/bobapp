@@ -71,19 +71,8 @@ export async function POST(request: Request) {
       console.log(transactionQuery.rows);
 
       // 3) Get the time
-      const currentTime = new Date()
-      const options: Intl.DateTimeFormatOptions = {
-        hour12:false,
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }
-      let currentTimeString = currentTime.toLocaleString("en-US", options)
-      currentTimeString = currentTimeString.replaceAll("/", "-")
-      currentTimeString = currentTimeString.replaceAll(",", "")
-      currentTimeString = currentTime.getFullYear() + "-" + currentTimeString
+      const { searchParams } = new URL(request.url);
+      const currentTimeString = searchParams.get("time");
 
       // 4) Get the Employee ID
       // Get the user role from the session, and use that to get the employeeID from the employee table.

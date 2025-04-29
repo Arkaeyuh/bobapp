@@ -87,6 +87,7 @@ function IngredientSelectionContent() {
 
   function addSelectedItemToCart() {
     const selectedIngredients: Ingredient[] = []
+    // Get all ingredients that are selected
     for(let i=0; i<ingredients.length; i++)
     {
       const element = document.getElementById("ingredButton"+ingredients[i].ingredientid) as HTMLButtonElement
@@ -99,6 +100,7 @@ function IngredientSelectionContent() {
       }
     }
 
+    // Get the quantity that is selected
     const quantityRadioButtons = document.getElementsByName("quantityRadio") as NodeListOf<HTMLInputElement>
     let finalQuantity = 1
     for(let i=0; i<quantityRadioButtons.length; i++) {
@@ -106,7 +108,8 @@ function IngredientSelectionContent() {
           finalQuantity=Number(quantityRadioButtons[i].value)
       }
     }
-    
+
+    // Add the current item, the selected ingredients, and the final quantity to the cart
     addToCart( {...currentItem, quantity: finalQuantity, ingredients:selectedIngredients})
   }
 
@@ -169,7 +172,8 @@ function IngredientSelectionContent() {
             href="#finishSelection"
             className="sr-only focus:not-sr-only text-2xl text-blue-700 underline"
           >
-            Skip to Cancel/Confirm Selection
+            <p>
+            Skip to Cancel/Confirm Selection</p>
           </a>
           <div className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-3">
           {

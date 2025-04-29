@@ -18,7 +18,7 @@ export async function translatePage(languageTo:string, languageFrom:string="en",
   if(landingPageToEN) {
     // Getting all HTML elements on the current page that have text inside of them
     const everythingInWebpage = document.querySelectorAll(stringOfElementsToSelect);
-    const englishStrings = ['Register','Login','Welcome to ShareTea','Click anywhere to get started','🌎Select Language:'
+    const englishStrings = ['Register','Login','Welcome to TeaShare','Sign in, or click anywhere to order as a guest','Continue as Guest', '🌎Select Language:'
       ,'Chinese', 'English', 'French', 'Japanese', 'Spanish'
     ];
     for (let i = 0; i < everythingInWebpage.length; i++) {

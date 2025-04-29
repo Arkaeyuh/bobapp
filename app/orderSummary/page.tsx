@@ -24,7 +24,22 @@ export default function OrderSummary() {
 
     // Send cart to backend
     try {
-      const result = await fetch("/api/updateInventory", {
+      // Get the current time
+      const currentTime = new Date()
+      const options: Intl.DateTimeFormatOptions = {
+        hour12:false,
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+      let currentTimeString = currentTime.toLocaleString("en-US", options)
+      currentTimeString = currentTimeString.replaceAll("/", "-")
+      currentTimeString = currentTimeString.replaceAll(",", "")
+      currentTimeString = currentTime.getFullYear() + "-" + currentTimeString
+
+      const result = await fetch(`/api/updateInventory?time=${encodeURIComponent(currentTimeString)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cart),

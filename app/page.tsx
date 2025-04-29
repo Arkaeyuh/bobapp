@@ -65,7 +65,8 @@ export default function KioskLandingPage() {
             href="/home"
             className="sr-only focus:not-sr-only text-2xl text-blue-500 underline"
           >
-            Continue as Guest
+            <p>
+            Continue as Guest</p>
           </Link>
         </div>
         
