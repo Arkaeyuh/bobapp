@@ -100,6 +100,17 @@ export default function Signup() {
               Sign Up
               </button>
           </form>
+
+
+          {/* Back to Start */}
+          <div className="mt-4">
+            <Link href="/">
+              <button className="p-3 bg-gray-100 text-black text-xl rounded-lg hover:bg-gray-200 transition w-full flex items-center justify-center gap-2">
+                Back to Start
+              </button>
+            </Link>
+          </div>
+
           {/* Link to login page */}
           <div className="flex justify-center text-center text-lg mt-4 text-black">
             <p className="mr-0.5"><b>Already have an account?</b></p>
