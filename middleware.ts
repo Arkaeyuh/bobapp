@@ -6,12 +6,12 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   // Check if the user is authenticated
-  if (!token) {
-    // Redirect unauthenticated users to the login page for manager routes
-    if ((req.nextUrl.pathname.startsWith("/manage") || req.nextUrl.pathname.startsWith("/weather") || req.nextUrl.pathname.startsWith("/analysis"))) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
+  // if (!token) {
+  //   // Redirect unauthenticated users to the login page for manager routes
+  //   if ((req.nextUrl.pathname.startsWith("/manage") || req.nextUrl.pathname.startsWith("/weather") || req.nextUrl.pathname.startsWith("/analysis"))) {
+  //     return NextResponse.redirect(new URL("/login", req.url));
+  //   }
+  // }
 
   // Check if the user is a manager for manager pages
   if (token && (req.nextUrl.pathname.startsWith("/manage") || req.nextUrl.pathname.startsWith("/weather") || req.nextUrl.pathname.startsWith("/analysis")) && !token.ismanager) {
