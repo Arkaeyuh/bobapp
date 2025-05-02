@@ -56,7 +56,7 @@ export default function ManageEmployee() {
 
     // Prepare the new employee data
     const employeeData: Employee = {
-      employeeid: employees.length + 1,
+      employeeid: employees.length + 10,
       ...newEmployee,
     };
 
