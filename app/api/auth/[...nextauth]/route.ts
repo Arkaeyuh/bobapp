@@ -78,6 +78,16 @@ const handler = NextAuth({
         token.ismanager = user.ismanager; // Pass the ismanager flag into the token.
         token.employeeid = user.employeeid; // Pass the employeeid into the token.
       }
+
+      if(user) {
+        if(user.email && token.ismanager === undefined) {
+          const pool = getPool();
+          const { rows } = await pool.query("SELECT e.ismanager, e.isactive, u.employeeid FROM users u LEFT JOIN employee e USING (employeeid) WHERE u.email = $1", [user.email]);
+          const row = rows[0] ?? {};
+          token.ismanager = row.ismanager ?? false; // Default to false if not found
+          token.role = row.isactive ? "employee" : "customer";
+        }
+      }
       return token;
     },
     async session({ session, token }) {
@@ -85,7 +95,7 @@ const handler = NextAuth({
         session.user.id = String(token.id);
         session.user.role = String(token.role); // Ensure the session has the role.
         session.user.ismanager = Boolean(token.ismanager); // Ensure the session has the manager flag.
-        session.user.employeeid = Number(token.employeeid); // Ensure the session has the employeeid.
+        session.user.employeeid = Number(token.employeeid ?? 0); // Ensure the session has the employeeid.
       }
       return session;
     },
