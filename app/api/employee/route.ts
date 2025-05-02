@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const { employeeid, lastname, firstname, ismanager } = body;
 
     await pool.query(
-      "INSERT INTO employee (employeeid, lastname, firstname, ismanager, isactive) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO employee (employeeid, lastname, firstname, ismanager, isactive) VALUES ($1, $2, $3, $4, $5)",
       [employeeid, lastname, firstname, ismanager, true]
     );
 
