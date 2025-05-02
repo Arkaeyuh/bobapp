@@ -96,6 +96,8 @@ const handler = NextAuth({
         session.user.role = String(token.role); // Ensure the session has the role.
         session.user.ismanager = Boolean(token.ismanager); // Ensure the session has the manager flag.
         session.user.employeeid = Number(token.employeeid ?? 0); // Ensure the session has the employeeid.
+
+        console.log("Session Data in Callback:", session); 
       }
       return session;
     },
