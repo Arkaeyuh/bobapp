@@ -25,11 +25,11 @@ export async function POST(req: Request) {
     const pool = await getPool();
     const body = await req.json();
 
-    const { employeeid, lastname, firstname, ismanager } = body;
+    const { employeeid, lastname, firstname, ismanager, isactive } = body;
 
     await pool.query(
-      "INSERT INTO employee (employeeid, lastname, firstname, ismanager, isactive) VALUES ($1, $2, $3, $4)",
-      [employeeid, lastname, firstname, ismanager, true]
+      "INSERT INTO employee (employeeid, lastname, firstname, ismanager, isactive) VALUES ($1, $2, $3, $4, $5)",
+      [employeeid, lastname, firstname, ismanager, isactive]
     );
 
     return NextResponse.json({
