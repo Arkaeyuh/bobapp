@@ -37,22 +37,30 @@ export default function KioskLandingPage() {
         onClick={handlePageClick}
         className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 cursor-pointer"
       >
-        {/* Register Link */}
-        <div className="absolute top-12 left-8" onClick={(e) => e.stopPropagation()}>
-          <Link href="/signup">
-            <span className="px-16 py-8 bg-red-700 text-white text-2xl font-bold rounded-xl hover:bg-red-900 shadow-xl">
-              Register
-            </span>
-          </Link>
-        </div>
+        <div className="flex flex-col md:flex-row items-center">
+          {/* Register Link */}
+          <div className="md:absolute md:top-12 md:left-8" onClick={(e) => e.stopPropagation()}>
+            <Link 
+              href="/signup"
+              className="flex m-4 bg-red-700 items-center px-16 md:py-8 py-2 rounded-xl hover:bg-red-900 shadow-xl"
+            >
+              <span className="text-white text-2xl font-bold">
+                Register
+              </span>
+            </Link>
+          </div>
 
-        {/* Login Link */}
-        <div className="absolute top-12 right-8" onClick={(e) => e.stopPropagation()}>
-          <Link href="/login">
-            <span className="px-16 py-8 bg-red-700 text-white text-2xl font-bold rounded-xl hover:bg-red-900 shadow-xl">
-              Login
-            </span>
-          </Link>
+          {/* Login Link */}
+          <div className="md:absolute md:top-12 md:right-8" onClick={(e) => e.stopPropagation()}>
+            <Link 
+              href="/login"
+              className="flex m-4 bg-red-700 items-center px-16 md:py-8 py-2 rounded-xl hover:bg-red-900 shadow-xl"
+            >
+              <span className="text-white text-2xl font-bold">
+                Login
+              </span>
+            </Link>
+          </div>
         </div>
 
         {/* Main Content */}
